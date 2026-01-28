@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Islamisk Kalender & Bönetider</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -96,16 +96,17 @@
 
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             padding-top: 20px;
         }
 
         .controls-row {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 20px;
             flex-wrap: wrap;
+            align-items: flex-start;
         }
 
         .language-toggle {
@@ -115,10 +116,11 @@
             border-radius: 50px;
             overflow: hidden;
             backdrop-filter: blur(10px);
+            height: fit-content;
         }
 
         .lang-btn {
-            padding: 10px 25px;
+            padding: 10px 20px;
             border: none;
             background: transparent;
             color: #aaa;
@@ -126,6 +128,7 @@
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
             transition: all 0.3s;
+            font-size: 0.9rem;
         }
 
         .lang-btn.active {
@@ -133,6 +136,57 @@
             color: #0a0e27;
         }
 
+        /* City Search - Separate */
+        .city-search-box {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            backdrop-filter: blur(10px);
+        }
+
+        .city-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            width: 200px;
+        }
+
+        .city-input::placeholder {
+            color: #888;
+        }
+
+        .city-input:focus {
+            outline: none;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            border: none;
+            color: #0a0e27;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Location Selector - Now just Stockholm/My Location */
         .location-selector {
             display: flex;
             background: var(--glass-bg);
@@ -140,10 +194,11 @@
             border-radius: 50px;
             overflow: hidden;
             backdrop-filter: blur(10px);
+            height: fit-content;
         }
 
         .loc-btn {
-            padding: 10px 25px;
+            padding: 10px 20px;
             border: none;
             background: transparent;
             color: #aaa;
@@ -151,6 +206,8 @@
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
             transition: all 0.3s;
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         .loc-btn.active {
@@ -166,7 +223,7 @@
 
         h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
+            font-size: 2.5rem;
             background: linear-gradient(135deg, var(--primary-gold), #fff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -176,11 +233,11 @@
 
         .subtitle {
             color: #888;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .api-status {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--primary-gold);
             margin-top: 5px;
             display: flex;
@@ -193,18 +250,19 @@
             color: #ff4444;
         }
 
+        /* Hero Section - Always 2 columns */
         .hero-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
         .clock-card {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-radius: 30px;
-            padding: 40px;
+            padding: 30px 20px;
             backdrop-filter: blur(20px);
             text-align: center;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -233,7 +291,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 15px;
             position: relative;
             z-index: 2;
@@ -243,11 +301,11 @@
             background: rgba(255,215,0,0.2);
             border: 1px solid var(--glass-border);
             color: var(--primary-gold);
-            width: 35px;
-            height: 35px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: all 0.3s;
             display: flex;
             align-items: center;
@@ -264,7 +322,7 @@
         .date-display-wrapper {
             position: relative;
             cursor: pointer;
-            padding: 5px 15px;
+            padding: 5px 10px;
             border-radius: 20px;
             transition: all 0.3s;
             border: 1px solid transparent;
@@ -276,7 +334,7 @@
         }
 
         .date-display {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: #ccc;
             margin: 0;
             pointer-events: none;
@@ -293,7 +351,7 @@
         }
 
         .today-indicator {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--primary-gold);
             margin-top: 2px;
             opacity: 0;
@@ -306,19 +364,19 @@
 
         .time-display {
             font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
+            font-size: 3rem;
             font-weight: 900;
             background: linear-gradient(135deg, #fff, var(--primary-gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin: 20px 0;
-            letter-spacing: 4px;
+            margin: 15px 0;
+            letter-spacing: 2px;
             position: relative;
             z-index: 2;
         }
 
         .islamic-date {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--primary-gold);
             font-weight: 600;
             position: relative;
@@ -326,7 +384,7 @@
         }
 
         .location-display {
-            margin-top: 15px;
+            margin-top: 10px;
             color: #888;
             display: flex;
             align-items: center;
@@ -334,11 +392,12 @@
             gap: 8px;
             position: relative;
             z-index: 2;
+            font-size: 0.9rem;
         }
 
         .pulse {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background: #00ff88;
             border-radius: 50%;
             animation: pulse 2s infinite;
@@ -354,14 +413,14 @@
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-radius: 30px;
-            padding: 30px;
+            padding: 25px;
             backdrop-filter: blur(20px);
             margin-bottom: 30px;
         }
 
         .section-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: var(--primary-gold);
             margin-bottom: 20px;
             display: flex;
@@ -369,17 +428,18 @@
             gap: 10px;
         }
 
+        /* Prayer Grid - Always 5 columns, scaled down on mobile */
         .prayer-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
+            gap: 10px;
         }
 
         .prayer-card {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,215,0,0.1);
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 15px;
+            padding: 15px 5px;
             text-align: center;
             transition: all 0.3s;
             position: relative;
@@ -387,9 +447,9 @@
         }
 
         .prayer-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             border-color: var(--primary-gold);
-            box-shadow: 0 10px 30px rgba(255,215,0,0.2);
+            box-shadow: 0 5px 15px rgba(255,215,0,0.2);
         }
 
         .prayer-card.active {
@@ -403,35 +463,30 @@
             border-color: rgba(255,255,255,0.05);
         }
 
-        .prayer-card.loading {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
         .prayer-name {
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             color: #888;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
 
         .prayer-time {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: white;
         }
 
         .prayer-icon {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
         }
 
         .countdown {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--primary-gold);
-            margin-top: 8px;
+            margin-top: 5px;
             font-weight: 600;
         }
 
@@ -439,13 +494,13 @@
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-radius: 30px;
-            padding: 30px;
+            padding: 25px;
             backdrop-filter: blur(20px);
         }
 
         .alarm-controls {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             margin-bottom: 15px;
             flex-wrap: wrap;
         }
@@ -454,12 +509,12 @@
             background: rgba(255,255,255,0.1);
             border: 1px solid var(--glass-border);
             color: white;
-            padding: 12px 20px;
+            padding: 10px 15px;
             border-radius: 10px;
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1rem;
             flex: 1;
-            min-width: 150px;
+            min-width: 120px;
         }
 
         .alarm-input::placeholder {
@@ -476,7 +531,7 @@
             background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
             border: none;
             color: #0a0e27;
-            padding: 12px 30px;
+            padding: 10px 25px;
             border-radius: 10px;
             cursor: pointer;
             font-weight: 700;
@@ -484,6 +539,7 @@
             transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-size: 0.9rem;
         }
 
         .btn:hover {
@@ -491,13 +547,9 @@
             box-shadow: 0 5px 20px rgba(255,215,0,0.4);
         }
 
-        .btn:active {
-            transform: translateY(0);
-        }
-
         .days-selector {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 20px;
             flex-wrap: wrap;
             justify-content: center;
@@ -508,8 +560,8 @@
         }
 
         .day-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             border: 1px solid var(--glass-border);
             background: rgba(255,255,255,0.05);
@@ -517,7 +569,7 @@
             cursor: pointer;
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             transition: all 0.3s;
             display: flex;
             align-items: center;
@@ -540,7 +592,7 @@
         .days-label {
             width: 100%;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #888;
             margin-bottom: 8px;
         }
@@ -555,62 +607,28 @@
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 15px;
-            padding: 15px 20px;
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             transition: all 0.3s;
         }
 
-        .alarm-item:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--glass-border);
-        }
-
-        .alarm-info {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
         .alarm-time {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: white;
-        }
-
-        .alarm-label {
-            font-size: 0.9rem;
-            color: #888;
-        }
-
-        .alarm-days {
-            display: flex;
-            gap: 4px;
-            font-size: 0.75rem;
-            color: var(--primary-gold);
-        }
-
-        .day-tag {
-            background: rgba(255,215,0,0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-            border: 1px solid rgba(255,215,0,0.3);
         }
 
         .delete-btn {
             background: rgba(255,0,0,0.2);
             border: 1px solid rgba(255,0,0,0.3);
             color: #ff4444;
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
-        }
-
-        .delete-btn:hover {
-            background: rgba(255,0,0,0.4);
-            box-shadow: 0 0 10px rgba(255,0,0,0.3);
+            font-size: 0.8rem;
         }
 
         .alarm-modal {
@@ -624,115 +642,52 @@
             z-index: 9999;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s;
         }
 
         .alarm-modal.active {
             display: flex;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
         .alarm-modal-content {
             background: linear-gradient(135deg, #1a1f4d, #0a0e27);
             border: 2px solid var(--primary-gold);
             border-radius: 30px;
-            padding: 50px;
+            padding: 40px 30px;
             text-align: center;
             box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
-            animation: pulse-border 2s infinite;
-            max-width: 500px;
-            width: 90%;
-        }
-
-        @keyframes pulse-border {
-            0%, 100% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.5); }
-            50% { box-shadow: 0 0 100px rgba(255, 215, 0, 0.8); }
+            max-width: 90%;
+            width: 400px;
         }
 
         .alarm-modal-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
+            font-size: 3rem;
+            margin-bottom: 15px;
             animation: shake 0.5s infinite;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
         }
 
         .alarm-modal-time {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: var(--primary-gold);
             margin-bottom: 10px;
         }
 
         .alarm-modal-text {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
+            font-size: 1.2rem;
+            margin-bottom: 25px;
             color: white;
         }
 
         .alarm-modal-buttons {
             display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-stop {
-            background: linear-gradient(135deg, #ff4444, #aa0000);
-            color: white;
-            font-size: 1.2rem;
-            padding: 15px 40px;
-        }
-
-        .btn-snooze {
-            background: linear-gradient(135deg, #444, #666);
-            color: white;
-            font-size: 1.2rem;
-            padding: 15px 40px;
-        }
-
-        .adhan-selector {
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-        }
-
-        .adhan-label {
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 8px;
-        }
-
-        .adhan-options {
-            display: flex;
             gap: 10px;
-            flex-wrap: wrap;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .adhan-btn {
-            background: rgba(255,215,0,0.1);
-            border: 1px solid var(--glass-border);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .adhan-btn:hover, .adhan-btn.active {
-            background: var(--primary-gold);
-            color: #0a0e27;
+        .btn-stop, .btn-snooze {
+            padding: 12px 30px;
+            font-size: 1rem;
         }
 
         .notification {
@@ -742,59 +697,111 @@
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(20px);
-            padding: 20px 30px;
+            padding: 15px 20px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             transform: translateX(400px);
             transition: transform 0.3s;
             z-index: 1000;
-            max-width: 350px;
+            max-width: 300px;
         }
 
         .notification.show {
             transform: translateX(0);
         }
 
-        .notification-title {
-            font-weight: 700;
-            color: var(--primary-gold);
-            margin-bottom: 5px;
+        .coords-display {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 5px;
         }
 
-        .notification-text {
-            color: #ccc;
-            font-size: 0.9rem;
-        }
+        /* Mobile adjustments - keep layout but scale down */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
 
-        @media (max-width: 968px) {
-            .hero-section {
-                grid-template-columns: 1fr;
-            }
-            .prayer-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .time-display {
-                font-size: 3rem;
-            }
             h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero-section {
+                gap: 10px;
+            }
+
+            .clock-card {
+                padding: 20px 10px;
+                border-radius: 20px;
+            }
+
+            .time-display {
                 font-size: 2rem;
             }
+
+            .date-display {
+                font-size: 0.9rem;
+            }
+
+            .islamic-date {
+                font-size: 0.8rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+
+            /* Prayer cards smaller but still 5 columns */
+            .prayer-card {
+                padding: 10px 2px;
+            }
+
+            .prayer-name {
+                font-size: 0.6rem;
+            }
+
+            .prayer-time {
+                font-size: 0.9rem;
+            }
+
+            .prayer-icon {
+                font-size: 1rem;
+            }
+
+            .day-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.7rem;
+            }
+
+            .city-input {
+                width: 150px;
+                font-size: 0.8rem;
+            }
         }
 
+        /* Extra small screens */
         @media (max-width: 480px) {
-            .prayer-grid {
-                grid-template-columns: 1fr;
+            .controls-row {
+                gap: 8px;
             }
-            .time-display {
-                font-size: 2.5rem;
-            }
-            .date-nav-container {
-                flex-wrap: wrap;
-            }
-            .day-btn {
-                width: 35px;
-                height: 35px;
+
+            .lang-btn, .loc-btn {
+                padding: 8px 15px;
                 font-size: 0.8rem;
+            }
+
+            .time-display {
+                font-size: 1.8rem;
+                letter-spacing: 1px;
+            }
+
+            .prayer-grid {
+                gap: 5px;
+            }
+
+            .prayer-card {
+                border-radius: 10px;
             }
         }
 
@@ -805,17 +812,16 @@
             border: 3px solid rgba(255,215,0,0.3);
             border-radius: 50%;
             border-top-color: var(--primary-gold);
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        .coords-display {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 5px;
+        @keyframes shake {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
         }
     </style>
 </head>
@@ -831,18 +837,29 @@
                     <button class="lang-btn active" onclick="setLanguage('sv')" id="sv-btn">Svenska</button>
                     <button class="lang-btn" onclick="setLanguage('en')" id="en-btn">English</button>
                 </div>
+                
+                
+
+
+                <!-- Location Buttons - Stockholm will update to show selected city -->
                 <div class="location-selector">
-                    <button class="loc-btn active" onclick="setLocation('stockholm')" id="loc-stockholm">Stockholm</button>
+                    <button class="loc-btn active" onclick="resetToStockholm()" id="loc-stockholm">Stockholm</button>
                     <button class="loc-btn" onclick="getCurrentLocation()" id="loc-my">Min Plats</button>
+                </div>
+<!-- Separated City Search -->
+                
+                <div class="city-search-box">
+                    <input type="text" class="city-input" id="cityInput" placeholder="Sök stad..." onkeypress="handleCityKeypress(event)">
+                    <button class="search-btn" onclick="searchCity()">🔍</button>
                 </div>
             </div>
 
-            <h1 id="page-title">MUSLIMSK KALENDER</h1>
+            <h1 id="page-title">MUSLIM KALENDER</h1>
             <div class="subtitle" id="page-subtitle">Bönetider & Daglig Schemaläggning</div>
             <div class="api-status" id="apiStatus">
                 <span>🌐 Al-Adhan API</span>
                 <span>|</span>
-                <span id="methodDisplay">Muslim World League</span>
+                <span>Muslim World League</span>
             </div>
         </div>
 
@@ -896,23 +913,13 @@
             
             <div class="days-selector" id="daysSelector">
                 <div class="days-label" id="days-label">Välj dagar:</div>
-                <button class="day-btn" onclick="toggleDay(1)" id="day-1">M</button>
-                <button class="day-btn" onclick="toggleDay(2)" id="day-2">T</button>
-                <button class="day-btn" onclick="toggleDay(3)" id="day-3">O</button>
-                <button class="day-btn" onclick="toggleDay(4)" id="day-4">T</button>
-                <button class="day-btn" onclick="toggleDay(5)" id="day-5">F</button>
-                <button class="day-btn" onclick="toggleDay(6)" id="day-6">L</button>
-                <button class="day-btn" onclick="toggleDay(0)" id="day-0">S</button>
-            </div>
-            
-            <div class="adhan-selector">
-                <div class="adhan-label" id="adhan-label">Välj Adhan (böneutrop):</div>
-                <div class="adhan-options">
-                    <button class="adhan-btn active" onclick="setAdhan('standard')" id="adhan-standard">Standard</button>
-                    <button class="adhan-btn" onclick="setAdhan('makkah')" id="adhan-makkah">Makkah</button>
-                    <button class="adhan-btn" onclick="setAdhan('madinah')" id="adhan-madinah">Madinah</button>
-                    <button class="adhan-btn" onclick="setAdhan('alaqsa')" id="adhan-alaqsa">Al-Aqsa</button>
-                </div>
+                <button class="day-btn active" onclick="toggleDay(1)" id="day-1">M</button>
+                <button class="day-btn active" onclick="toggleDay(2)" id="day-2">T</button>
+                <button class="day-btn active" onclick="toggleDay(3)" id="day-3">O</button>
+                <button class="day-btn active" onclick="toggleDay(4)" id="day-4">T</button>
+                <button class="day-btn active" onclick="toggleDay(5)" id="day-5">F</button>
+                <button class="day-btn active" onclick="toggleDay(6)" id="day-6">L</button>
+                <button class="day-btn active" onclick="toggleDay(0)" id="day-0">S</button>
             </div>
             
             <div class="alarm-list" id="alarmList"></div>
@@ -937,22 +944,10 @@
     </div>
 
     <script>
-        // Adhan Audio URLs
-        const adhanSounds = {
-            standard: 'https://www.islamcan.com/audio/adhan/azan1.mp3',
-            makkah: 'https://www.islamcan.com/audio/adhan/azan2.mp3',
-            madinah: 'https://www.islamcan.com/audio/adhan/azan3.mp3',
-            alaqsa: 'https://www.islamcan.com/audio/adhan/azan4.mp3'
-        };
-
-        let currentAdhan = 'standard';
-        let adhanAudio = null;
-
         const translations = {
             sv: {
                 title: "ISLAMISK KALENDER",
                 subtitle: "Bönetider & Daglig Schemaläggning",
-                stockholm: "Stockholm",
                 myLocation: "Min Plats",
                 today: "Idag",
                 loading: "Laddar...",
@@ -973,7 +968,7 @@
                 alarmTriggered: "Adhan!",
                 locationSet: "Plats inställd",
                 prayerTimesUpdated: "Bönetider uppdaterade för",
-                locationError: "Kunde inte hämta plats. Använder Stockholm.",
+                locationError: "Kunde inte hämta plats.",
                 alarmSet: "Larm inställt",
                 alarmSetFor: "Larm inställt för",
                 enterTime: "Vänligen välj en tid för larmet.",
@@ -982,17 +977,18 @@
                 hours: "t",
                 minutes: "m",
                 selectedDate: "Valt datum",
-                adhanLabel: "Välj Adhan (böneutrop):",
                 daysLabel: "Välj dagar:",
                 everyDay: "Varje dag",
                 weekdays: "Vardagar",
                 weekends: "Helg",
-                days: ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"]
+                days: ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"],
+                cityPlaceholder: "Sök stad...",
+                cityNotFound: "Staden hittades inte",
+                stockholm: "Stockholm"
             },
             en: {
                 title: "ISLAMIC CALENDAR",
                 subtitle: "Prayer Times & Daily Scheduler",
-                stockholm: "Stockholm",
                 myLocation: "My Location",
                 today: "Today",
                 loading: "Loading...",
@@ -1013,7 +1009,7 @@
                 alarmTriggered: "Adhan!",
                 locationSet: "Location set",
                 prayerTimesUpdated: "Prayer times updated for",
-                locationError: "Could not get location. Using Stockholm.",
+                locationError: "Could not get location.",
                 alarmSet: "Alarm set",
                 alarmSetFor: "Alarm set for",
                 enterTime: "Please select a time for the alarm.",
@@ -1022,19 +1018,21 @@
                 hours: "h",
                 minutes: "m",
                 selectedDate: "Selected date",
-                adhanLabel: "Select Adhan (call to prayer):",
                 daysLabel: "Select days:",
                 everyDay: "Every day",
                 weekdays: "Weekdays",
                 weekends: "Weekends",
-                days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+                days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                cityPlaceholder: "Search city...",
+                cityNotFound: "City not found",
+                stockholm: "Stockholm"
             }
         };
 
         let currentLang = 'sv';
         let selectedDate = new Date();
-        const DEFAULT_LOCATION = { lat: 59.3293, lng: 18.0686, name: "Stockholm, Sverige", nameEn: "Stockholm, Sweden" };
-        let currentLocation = DEFAULT_LOCATION;
+        const DEFAULT_LOCATION = { lat: 59.3293, lng: 18.0686, name: "Stockholm, Sverige", nameEn: "Stockholm, Sweden", city: "Stockholm" };
+        let currentLocation = {...DEFAULT_LOCATION};
         let prayers = {};
         let todayPrayers = {};
         let alarms = JSON.parse(localStorage.getItem('islamicAlarms')) || [];
@@ -1050,20 +1048,72 @@
             setInterval(updateClock, 1000);
             setInterval(checkAlarms, 1000);
             updateAlarmList();
-            updateDaysUI();
             
             if ("Notification" in window) {
                 Notification.requestPermission();
             }
         });
 
-        function setAdhan(type) {
-            currentAdhan = type;
-            document.querySelectorAll('.adhan-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`adhan-${type}`).classList.add('active');
-            adhanAudio = new Audio(adhanSounds[type]);
-            adhanAudio.load();
-            showNotification('Adhan', currentLang === 'sv' ? 'Böneutrop vald' : 'Adhan selected');
+        function handleCityKeypress(event) {
+            if (event.key === 'Enter') {
+                searchCity();
+            }
+        }
+
+        async function searchCity() {
+            const input = document.getElementById('cityInput');
+            const city = input.value.trim();
+            const t = translations[currentLang];
+            
+            if (!city) return;
+            
+            const originalValue = input.value;
+            input.value = '...';
+            input.disabled = true;
+            
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`);
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    const result = data[0];
+                    const cityName = result.display_name.split(',')[0];
+                    
+                    currentLocation = {
+                        lat: parseFloat(result.lat),
+                        lng: parseFloat(result.lon),
+                        name: cityName + (currentLang === 'sv' ? '' : ''),
+                        nameEn: cityName,
+                        city: cityName
+                    };
+                    
+                    // Update the Stockholm button to show the city name
+                    const stockholmBtn = document.getElementById('loc-stockholm');
+                    stockholmBtn.innerText = cityName;
+                    stockholmBtn.classList.add('active');
+                    document.getElementById('loc-my').classList.remove('active');
+                    
+                    updateLocationDisplay();
+                    loadPrayerTimes();
+                    showNotification(t.locationSet, `${t.prayerTimesUpdated} ${cityName}`);
+                } else {
+                    showNotification('Error', t.cityNotFound);
+                }
+            } catch (error) {
+                console.error("Geocoding error:", error);
+                showNotification('Error', 'Kunde inte söka stad.');
+            } finally {
+                input.value = '';
+                input.disabled = false;
+                input.placeholder = t.cityPlaceholder;
+            }
+        }
+
+        function resetToStockholm() {
+            currentLocation = {...DEFAULT_LOCATION};
+            document.getElementById('loc-stockholm').innerText = translations[currentLang].stockholm;
+            updateLocationDisplay();
+            loadPrayerTimes();
         }
 
         function toggleDay(day) {
@@ -1081,16 +1131,12 @@
 
         function updateDaysUI() {
             for (let i = 0; i < 7; i++) {
-                document.getElementById(`day-${i}`).classList.remove('active');
+                document.getElementById(`day-${i}`).classList.toggle('active', selectedDays.includes(i));
             }
-            selectedDays.forEach(day => {
-                document.getElementById(`day-${day}`).classList.add('active');
-            });
         }
 
         function initDatePicker() {
-            const picker = document.getElementById('datePicker');
-            picker.valueAsDate = selectedDate;
+            document.getElementById('datePicker').valueAsDate = selectedDate;
             updateTodayIndicator();
         }
 
@@ -1100,10 +1146,8 @@
             const selected = new Date(selectedDate);
             selected.setHours(0,0,0,0);
             
-            const isToday = selected.getTime() === today.getTime();
             const indicator = document.getElementById('todayIndicator');
-            
-            if (isToday) {
+            if (selected.getTime() === today.getTime()) {
                 indicator.classList.add('show');
                 indicator.innerText = translations[currentLang].today;
             } else {
@@ -1118,8 +1162,7 @@
         }
 
         function manualDateChange() {
-            const picker = document.getElementById('datePicker');
-            selectedDate = new Date(picker.value);
+            selectedDate = new Date(document.getElementById('datePicker').value);
             onDateChange();
         }
 
@@ -1129,16 +1172,13 @@
             loadPrayerTimes();
         }
 
-        // Fetch from Al-Adhan API
         async function loadPrayerTimes() {
             showLoadingState();
             
             try {
-                // Fetch for selected date (for the grid)
                 const selectedTimestamp = Math.floor(selectedDate.getTime() / 1000);
                 prayers = await fetchPrayerTimes(selectedTimestamp);
                 
-                // Fetch for today (for next prayer)
                 const today = new Date();
                 const todayTimestamp = Math.floor(today.getTime() / 1000);
                 todayPrayers = await fetchPrayerTimes(todayTimestamp);
@@ -1151,8 +1191,6 @@
                 console.error("API Error:", error);
                 isOffline = true;
                 updateApiStatus();
-                
-                // Fallback to local calculation
                 calculatePrayerTimesLocal();
                 calculateTodayPrayersLocal();
                 showNotification('Offline', currentLang === 'sv' ? 'Använder lokal beräkning' : 'Using local calculation');
@@ -1160,48 +1198,39 @@
         }
 
         async function fetchPrayerTimes(timestamp) {
-            const url = `https://api.aladhan.com/v1/timings/${timestamp}?latitude=${currentLocation.lat}&longitude=${currentLocation.lng}&method=3&school=0`;
-            
+            const url = `https://api.aladhan.com/v1/timings/${timestamp}?latitude=${currentLocation.lat}&longitude=${currentLocation.lng}&method=3`;
             const response = await fetch(url);
             const data = await response.json();
             
-            if (data.code !== 200) {
-                throw new Error('API Error');
-            }
+            if (data.code !== 200) throw new Error('API Error');
             
-            const timings = data.data.timings;
+            const t = data.data.timings;
             return {
-                fajr: formatApiTime(timings.Fajr),
-                sunrise: formatApiTime(timings.Sunrise),
-                dhuhr: formatApiTime(timings.Dhuhr),
-                asr: formatApiTime(timings.Asr),
-                maghrib: formatApiTime(timings.Maghrib),
-                isha: formatApiTime(timings.Isha)
+                fajr: t.Fajr.substring(0, 5),
+                sunrise: t.Sunrise.substring(0, 5),
+                dhuhr: t.Dhuhr.substring(0, 5),
+                asr: t.Asr.substring(0, 5),
+                maghrib: t.Maghrib.substring(0, 5),
+                isha: t.Isha.substring(0, 5)
             };
         }
 
-        function formatApiTime(timeStr) {
-            // API returns "HH:MM (24h)" - we just need HH:MM
-            return timeStr.substring(0, 5);
-        }
-
         function updateApiStatus() {
-            const statusEl = document.getElementById('apiStatus');
+            const el = document.getElementById('apiStatus');
             if (isOffline) {
-                statusEl.classList.add('offline');
-                statusEl.innerHTML = `<span>⚠️ Offline</span><span>|</span><span>Lokal beräkning</span>`;
+                el.classList.add('offline');
+                el.innerHTML = `<span>⚠️ Offline</span><span>|</span><span>Lokal</span>`;
             } else {
-                statusEl.classList.remove('offline');
-                statusEl.innerHTML = `<span>🌐 Al-Adhan API</span><span>|</span><span id="methodDisplay">Muslim World League</span>`;
+                el.classList.remove('offline');
+                el.innerHTML = `<span>🌐 Al-Adhan API</span><span>|</span><span>MWL</span>`;
             }
         }
 
         function showLoadingState() {
-            const grid = document.getElementById('prayerGrid');
-            grid.innerHTML = `
+            document.getElementById('prayerGrid').innerHTML = `
                 <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">
                     <div class="loading"></div>
-                    <div style="margin-top: 10px;">${currentLang === 'sv' ? 'Hämtar bönetider...' : 'Loading prayer times...'}</div>
+                    <div style="margin-top: 10px; font-size: 0.9rem;">${currentLang === 'sv' ? 'Hämtar...' : 'Loading...'}</div>
                 </div>
             `;
         }
@@ -1210,14 +1239,19 @@
             currentLang = lang;
             document.getElementById('sv-btn').classList.toggle('active', lang === 'sv');
             document.getElementById('en-btn').classList.toggle('active', lang === 'en');
-            document.getElementById('loc-stockholm').innerText = translations[lang].stockholm;
             document.getElementById('loc-my').innerText = translations[lang].myLocation;
+            
+            // Only reset Stockholm text if we're actually on Stockholm
+            if (currentLocation.city === 'Stockholm' || currentLocation.city === undefined) {
+                document.getElementById('loc-stockholm').innerText = translations[lang].stockholm;
+            }
+            
+            document.getElementById('cityInput').placeholder = translations[lang].cityPlaceholder;
             
             updateTexts();
             loadPrayerTimes();
             updateAlarmList();
             updateTodayIndicator();
-            updateDaysUI();
         }
 
         function updateTexts() {
@@ -1232,38 +1266,34 @@
             document.getElementById('stop-alarm-btn').innerText = t.stopAlarm;
             document.getElementById('snooze-btn').innerText = t.snooze;
             document.getElementById('locationName').innerText = currentLang === 'sv' ? currentLocation.name : currentLocation.nameEn;
-            document.getElementById('adhan-label').innerText = t.adhanLabel;
             document.getElementById('days-label').innerText = t.daysLabel;
             document.getElementById('todayIndicator').innerText = t.today;
             
-            const dayIds = [1, 2, 3, 4, 5, 6, 0];
-            dayIds.forEach((dayIndex, i) => {
-                document.getElementById(`day-${dayIndex}`).innerText = t.days[dayIndex];
+            [0,1,2,3,4,5,6].forEach(i => {
+                document.getElementById(`day-${i}`).innerText = t.days[i];
             });
         }
 
         function createStars() {
-            const starsContainer = document.getElementById('stars');
+            const container = document.getElementById('stars');
             for (let i = 0; i < 100; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + '%';
                 star.style.top = Math.random() * 100 + '%';
                 star.style.animationDelay = Math.random() * 3 + 's';
-                starsContainer.appendChild(star);
+                container.appendChild(star);
             }
         }
 
         function updateClock() {
             const now = new Date();
-            
-            const timeStr = now.toLocaleTimeString(currentLang === 'sv' ? 'sv-SE' : 'en-US', { 
+            document.getElementById('timeDisplay').innerText = now.toLocaleTimeString(currentLang === 'sv' ? 'sv-SE' : 'en-US', { 
                 hour12: false, 
                 hour: '2-digit', 
                 minute: '2-digit', 
                 second: '2-digit' 
             });
-            document.getElementById('timeDisplay').innerText = timeStr;
             
             const dateStr = selectedDate.toLocaleDateString(currentLang === 'sv' ? 'sv-SE' : 'en-US', { 
                 weekday: 'long', 
@@ -1272,118 +1302,83 @@
                 day: 'numeric' 
             });
             document.getElementById('dateDisplay').innerText = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
-            
-            const islamicDate = getIslamicDate(selectedDate);
-            document.getElementById('islamicDate').innerText = islamicDate;
+            document.getElementById('islamicDate').innerText = getIslamicDate(selectedDate);
         }
 
         function getIslamicDate(date) {
             const start = new Date(622, 6, 16);
             const diff = date - start;
-            const oneDay = 1000 * 60 * 60 * 24;
-            const days = Math.floor(diff / oneDay);
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const years = Math.floor(days / 354.367);
             const year = 1 + years;
             const remainingDays = days - (years * 354.367);
             const months = Math.floor(remainingDays / 29.53);
-            
-            const monthNamesSv = ["Muharram", "Safar", "Rabi' al-awwal", "Rabi' al-thani", "Jumada al-awwal", 
-                              "Jumada al-thani", "Rajab", "Sha'ban", "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"];
-            const monthNamesEn = ["Muharram", "Safar", "Rabi' al-Awwal", "Rabi' al-Thani", "Jumada al-Awwal", 
-                              "Jumada al-Thani", "Rajab", "Sha'ban", "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"];
-            
             const day = Math.floor(remainingDays - (months * 29.53)) + 1;
-            const monthNames = currentLang === 'sv' ? monthNamesSv : monthNamesEn;
+            
+            const monthNames = currentLang === 'sv' 
+                ? ["Muharram", "Safar", "Rabi' al-awwal", "Rabi' al-thani", "Jumada al-awwal", "Jumada al-thani", "Rajab", "Sha'ban", "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"]
+                : ["Muharram", "Safar", "Rabi' al-Awwal", "Rabi' al-Thani", "Jumada al-Awwal", "Jumada al-Thani", "Rajab", "Sha'ban", "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"];
             
             return `${day} ${monthNames[months]} ${year} AH`;
         }
 
-        // Local fallback calculation
+        // Local fallback calculations
         function calculatePrayerTimesLocal() {
-            const lat = currentLocation.lat;
-            const lng = currentLocation.lng;
-            
-            prayers = calculatePrayerTimesRaw(selectedDate, lat, lng);
+            prayers = calculateRaw(selectedDate, currentLocation.lat, currentLocation.lng);
             displayPrayerTimes();
         }
 
         function calculateTodayPrayersLocal() {
-            const lat = currentLocation.lat;
-            const lng = currentLocation.lng;
-            const today = new Date();
-            
-            todayPrayers = calculatePrayerTimesRaw(today, lat, lng);
+            todayPrayers = calculateRaw(new Date(), currentLocation.lat, currentLocation.lng);
             updateNextPrayer();
         }
 
-        function calculatePrayerTimesRaw(date, lat, lng) {
+        function calculateRaw(date, lat, lng) {
+            // Simplified calculation
             const times = {};
             const timezone = -date.getTimezoneOffset() / 60;
-            
-            const d = date.getDate();
-            const m = date.getMonth() + 1;
-            const y = date.getFullYear();
-            
-            const jd = (1461 * (y + 4800 + Math.floor((m - 14) / 12))) / 4 +
-                      (367 * (m - 2 - 12 * Math.floor((m - 14) / 12))) / 12 -
-                      (3 * Math.floor((y + 4900 + Math.floor((m - 14) / 12)) / 100)) / 4 + d - 32075;
-            
+            const jd = date.getDate();
             const D = jd - 2451545.0;
-            const g = fixangle(357.529 + 0.98560028 * D);
-            const q = fixangle(280.459 + 0.98564736 * D);
-            const L = fixangle(q + 1.915 * dsin(g) + 0.020 * dsin(2 * g));
+            const g = (357.529 + 0.98560028 * D) % 360;
+            const q = (280.459 + 0.98564736 * D) % 360;
+            const L = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
             const e = 23.439 - 0.00000036 * D;
-            const RA = toDegree(Math.atan2(dcos(e) * dsin(L), dcos(L))) / 15;
-            const eqt = q / 15 - fixhour(RA);
-            const decl = toDegree(Math.asin(dsin(e) * dsin(L)));
-            
-            const Fajr_angle = -18;
-            const Isha_angle = -17;
-            const Maghrib_angle = 0.833;
-            const Sunrise_angle = 0.833;
+            const RA = (Math.atan2(Math.cos(e * Math.PI / 180) * Math.sin(L * Math.PI / 180), Math.cos(L * Math.PI / 180)) * 180 / Math.PI) / 15;
+            const eqt = q / 15 - ((RA % 24) + 24) % 24;
+            const decl = Math.asin(Math.sin(e * Math.PI / 180) * Math.sin(L * Math.PI / 180)) * 180 / Math.PI;
             
             const Dhuhr = 12 + timezone - lng / 15 - eqt;
             
-            const Fajr_offset = toDegree(Math.acos((dcos(90 + Math.abs(Fajr_angle)) - dsin(decl) * dsin(lat)) / (dcos(decl) * dcos(lat))));
-            times.fajr = Dhuhr - Fajr_offset / 15;
+            const fajrAngle = -18;
+            const fajrOffset = Math.acos((Math.cos((90 + Math.abs(fajrAngle)) * Math.PI / 180) - Math.sin(decl * Math.PI / 180) * Math.sin(lat * Math.PI / 180)) / (Math.cos(decl * Math.PI / 180) * Math.cos(lat * Math.PI / 180))) * 180 / Math.PI;
+            times.fajr = adjustTime(Dhuhr - fajrOffset / 15);
             
-            const Sunrise_offset = toDegree(Math.acos((dcos(90 + Sunrise_angle) - dsin(decl) * dsin(lat)) / (dcos(decl) * dcos(lat))));
-            times.sunrise = Dhuhr - Sunrise_offset / 15;
+            const sunriseAngle = 0.833;
+            const sunriseOffset = Math.acos((Math.cos((90 + sunriseAngle) * Math.PI / 180) - Math.sin(decl * Math.PI / 180) * Math.sin(lat * Math.PI / 180)) / (Math.cos(decl * Math.PI / 180) * Math.cos(lat * Math.PI / 180))) * 180 / Math.PI;
+            times.sunrise = adjustTime(Dhuhr - sunriseOffset / 15);
             
-            times.dhuhr = Dhuhr;
+            times.dhuhr = adjustTime(Dhuhr);
             
-            const Asr_shadow = 1;
-            const Asr_angle = toDegree(Math.atan(1 / (Asr_shadow + dtan(Math.abs(lat - decl)))));
-            const Asr_offset = toDegree(Math.acos((dsin(90 - Asr_angle) - dsin(decl) * dsin(lat)) / (dcos(decl) * dcos(lat))));
-            times.asr = Dhuhr + Asr_offset / 15;
+            const asrShadow = 1;
+            const asrAngle = Math.atan(1 / (asrShadow + Math.tan(Math.abs(lat - decl) * Math.PI / 180))) * 180 / Math.PI;
+            const asrOffset = Math.acos((Math.sin((90 - asrAngle) * Math.PI / 180) - Math.sin(decl * Math.PI / 180) * Math.sin(lat * Math.PI / 180)) / (Math.cos(decl * Math.PI / 180) * Math.cos(lat * Math.PI / 180))) * 180 / Math.PI;
+            times.asr = adjustTime(Dhuhr + asrOffset / 15);
             
-            const Maghrib_offset = toDegree(Math.acos((dcos(90 + Maghrib_angle) - dsin(decl) * dsin(lat)) / (dcos(decl) * dcos(lat))));
-            times.maghrib = Dhuhr + Maghrib_offset / 15;
+            times.maghrib = adjustTime(Dhuhr + sunriseOffset / 15);
             
-            const Isha_offset = toDegree(Math.acos((dcos(90 + Math.abs(Isha_angle)) - dsin(decl) * dsin(lat)) / (dcos(decl) * dcos(lat))));
-            times.isha = Dhuhr + Isha_offset / 15;
-            
-            for (let key in times) {
-                times[key] = adjustTime(times[key]);
-            }
+            const ishaAngle = -17;
+            const ishaOffset = Math.acos((Math.cos((90 + Math.abs(ishaAngle)) * Math.PI / 180) - Math.sin(decl * Math.PI / 180) * Math.sin(lat * Math.PI / 180)) / (Math.cos(decl * Math.PI / 180) * Math.cos(lat * Math.PI / 180))) * 180 / Math.PI;
+            times.isha = adjustTime(Dhuhr + ishaOffset / 15);
             
             return times;
         }
 
-        function dsin(deg) { return Math.sin(toRad(deg)); }
-        function dcos(deg) { return Math.cos(toRad(deg)); }
-        function dtan(deg) { return Math.tan(toRad(deg)); }
-        function toRad(deg) { return deg * Math.PI / 180.0; }
-        function toDegree(rad) { return rad * 180.0 / Math.PI; }
-        function fixangle(angle) { return angle - 360 * Math.floor(angle / 360); }
-        function fixhour(hour) { return hour - 24 * Math.floor(hour / 24); }
-        
         function adjustTime(time) {
             if (isNaN(time)) return "00:00";
-            time = fixhour(time);
-            let hours = Math.floor(time);
-            let minutes = Math.floor((time - hours) * 60);
-            if (hours < 0) hours += 24;
+            time = time % 24;
+            if (time < 0) time += 24;
+            const hours = Math.floor(time);
+            const minutes = Math.floor((time - hours) * 60);
             return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
         }
 
@@ -1391,7 +1386,7 @@
             const grid = document.getElementById('prayerGrid');
             const t = translations[currentLang];
             
-            const prayerNames = {
+            const names = {
                 fajr: { name: t.fajr, icon: '🌅' },
                 sunrise: { name: t.sunrise, icon: '🌄' },
                 dhuhr: { name: t.dhuhr, icon: '☀️' },
@@ -1406,29 +1401,20 @@
             const currentHour = now.getHours() + now.getMinutes() / 60;
             
             for (let [key, time] of Object.entries(prayers)) {
-                if (!prayerNames[key]) continue;
-                
+                if (!names[key]) continue;
                 const [h, m] = time.split(':').map(Number);
                 const prayerHour = h + m / 60;
-                
-                let hasPassed = false;
-                let isActive = false;
-                
-                if (isToday) {
-                    hasPassed = currentHour > prayerHour + 0.5;
-                    isActive = Math.abs(currentHour - prayerHour) < 0.5;
-                }
+                const hasPassed = isToday && currentHour > prayerHour + 0.5;
+                const isActive = isToday && Math.abs(currentHour - prayerHour) < 0.5;
                 
                 html += `
-                    <div class="prayer-card ${isActive ? 'active' : ''} ${hasPassed ? 'passed' : ''}" id="prayer-${key}">
-                        <div class="prayer-icon">${prayerNames[key].icon}</div>
-                        <div class="prayer-name">${prayerNames[key].name}</div>
+                    <div class="prayer-card ${isActive ? 'active' : ''} ${hasPassed ? 'passed' : ''}">
+                        <div class="prayer-icon">${names[key].icon}</div>
+                        <div class="prayer-name">${names[key].name}</div>
                         <div class="prayer-time">${time}</div>
-                        ${isToday ? `<div class="countdown" id="count-${key}"></div>` : ''}
                     </div>
                 `;
             }
-            
             grid.innerHTML = html;
         }
 
@@ -1436,13 +1422,12 @@
             const t = translations[currentLang];
             const now = new Date();
             
-            if (Object.keys(todayPrayers).length === 0) return;
+            if (!todayPrayers.fajr) return;
             
             const currentHour = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
-            
             let nextPrayer = null;
             let nextTime = null;
-            let minDiff = Infinity;
+            let minDiff = 24;
             
             for (let [key, time] of Object.entries(todayPrayers)) {
                 if (key === 'sunrise') continue;
@@ -1459,25 +1444,12 @@
             }
             
             if (nextPrayer) {
-                const names = { fajr: t.fajr, dhuhr: t.dhuhr, asr: t.asr, maghrib: t.maghrib, isha: t.isha };
-                document.getElementById('nextPrayerName').innerText = names[nextPrayer];
+                const prayerNames = { fajr: t.fajr, dhuhr: t.dhuhr, asr: t.asr, maghrib: t.maghrib, isha: t.isha };
+                document.getElementById('nextPrayerName').innerText = prayerNames[nextPrayer];
                 document.getElementById('nextPrayerTime').innerText = nextTime;
-                
                 const hours = Math.floor(minDiff);
                 const mins = Math.floor((minDiff - hours) * 60);
                 document.getElementById('countdown').innerText = `${t.in} ${hours}${t.hours} ${mins}${t.minutes}`;
-            }
-        }
-
-        function setLocation(type) {
-            document.querySelectorAll('.loc-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            if (type === 'stockholm') {
-                currentLocation = DEFAULT_LOCATION;
-                updateLocationDisplay();
-                loadPrayerTimes();
-                showNotification(translations[currentLang].locationSet, translations[currentLang].prayerTimesUpdated + ' Stockholm');
             }
         }
 
@@ -1490,55 +1462,41 @@
                 return;
             }
             
-            document.querySelectorAll('.loc-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const originalText = btn.innerText;
-            btn.innerHTML = '<span class="loading"></span> Hittar...';
-            
-            const options = {
-                enableHighAccuracy: true,
-                timeout: 15000,
-                maximumAge: 0
-            };
+            btn.innerHTML = '<span class="loading"></span>';
             
             navigator.geolocation.getCurrentPosition(
-                (position) => {
+                (pos) => {
                     currentLocation = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude,
                         name: "Din Plats",
                         nameEn: "Your Location",
-                        accuracy: position.coords.accuracy
+                        city: "GPS"
                     };
-                    
+                    document.getElementById('loc-stockholm').innerText = t.stockholm;
                     updateLocationDisplay();
                     loadPrayerTimes();
-                    showNotification(t.locationSet, `${t.prayerTimesUpdated} din plats (${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)})`);
+                    showNotification(t.locationSet, `${t.prayerTimesUpdated} GPS`);
                     btn.innerText = originalText;
                 },
-                (error) => {
-                    console.error("Geolocation error:", error);
-                    let errorMsg = t.locationError;
-                    if (error.code === 1) errorMsg = "Platstjänster nekad. Aktivera GPS.";
-                    else if (error.code === 2) errorMsg = "Kunde inte bestämma plats.";
-                    else if (error.code === 3) errorMsg = "Timeout. Försök igen.";
-                    
-                    showNotification('Error', errorMsg);
+                (err) => {
+                    showNotification('Error', t.locationError);
                     btn.classList.remove('active');
-                    document.querySelector('[onclick="setLocation(\'stockholm\')"]').classList.add('active');
+                    document.getElementById('loc-stockholm').classList.add('active');
                     btn.innerText = originalText;
                 },
-                options
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
             );
         }
 
         function updateLocationDisplay() {
-            document.getElementById('locationName').innerText = currentLang === 'sv' ? currentLocation.name : currentLocation.nameEn;
-            
-            if (currentLocation.lat && currentLocation.lng) {
-                document.getElementById('coordsDisplay').innerText = 
-                    `${Math.abs(currentLocation.lat).toFixed(4)}°${currentLocation.lat >= 0 ? 'N' : 'S'}, ${Math.abs(currentLocation.lng).toFixed(4)}°${currentLocation.lng >= 0 ? 'E' : 'W'}`;
-            }
+            const name = currentLang === 'sv' ? currentLocation.name : currentLocation.nameEn;
+            document.getElementById('locationName').innerText = name;
+            document.getElementById('coordsDisplay').innerText = 
+                `${Math.abs(currentLocation.lat).toFixed(3)}°${currentLocation.lat >= 0 ? 'N' : 'S'}, ${Math.abs(currentLocation.lng).toFixed(3)}°${currentLocation.lng >= 0 ? 'E' : 'W'}`;
         }
 
         function addAlarm() {
@@ -1552,7 +1510,7 @@
             }
             
             if (selectedDays.length === 0) {
-                showNotification('Error', currentLang === 'sv' ? 'Välj minst en dag' : 'Select at least one day');
+                showNotification('Error', 'Välj minst en dag');
                 return;
             }
             
@@ -1576,18 +1534,9 @@
         function formatDays(days) {
             const t = translations[currentLang];
             if (days.length === 7) return `(${t.everyDay})`;
-            if (days.length === 0) return '';
-            
-            const weekdays = [1, 2, 3, 4, 5];
-            const isWeekdays = weekdays.every(d => days.includes(d)) && days.length === 5;
-            if (isWeekdays) return `(${t.weekdays})`;
-            
-            const weekends = [0, 6];
-            const isWeekends = weekends.every(d => days.includes(d)) && days.length === 2;
-            if (isWeekends) return `(${t.weekends})`;
-            
-            const dayNames = days.map(d => t.days[d]).join(', ');
-            return `(${dayNames})`;
+            if ([1,2,3,4,5].every(d => days.includes(d)) && days.length === 5) return `(${t.weekdays})`;
+            if ([0,6].every(d => days.includes(d)) && days.length === 2) return `(${t.weekends})`;
+            return `(${days.map(d => t.days[d]).join(', ')})`;
         }
 
         function updateAlarmList() {
@@ -1595,28 +1544,19 @@
             const t = translations[currentLang];
             
             if (alarms.length === 0) {
-                list.innerHTML = `<div style="color: #666; text-align: center; padding: 20px;">${t.noAlarms}</div>`;
+                list.innerHTML = `<div style="color: #666; text-align: center; padding: 20px; font-size: 0.9rem;">${t.noAlarms}</div>`;
                 return;
             }
             
-            let html = '';
-            alarms.forEach(alarm => {
-                const daysText = formatDays(alarm.days);
-                html += `
-                    <div class="alarm-item">
-                        <div class="alarm-info">
-                            <div>
-                                <span class="alarm-time">${alarm.time}</span>
-                                <span style="color: var(--primary-gold); font-size: 0.9rem; margin-left: 8px;">${daysText}</span>
-                            </div>
-                            <div class="alarm-label">${alarm.label}</div>
-                        </div>
-                        <button class="delete-btn" onclick="deleteAlarm(${alarm.id})">${t.delete}</button>
+            list.innerHTML = alarms.map(alarm => `
+                <div class="alarm-item">
+                    <div>
+                        <div class="alarm-time">${alarm.time} <span style="color: var(--primary-gold); font-size: 0.8rem;">${formatDays(alarm.days)}</span></div>
+                        <div style="font-size: 0.8rem; color: #888;">${alarm.label}</div>
                     </div>
-                `;
-            });
-            
-            list.innerHTML = html;
+                    <button class="delete-btn" onclick="deleteAlarm(${alarm.id})">${t.delete}</button>
+                </div>
+            `).join('');
         }
 
         function deleteAlarm(id) {
@@ -1627,21 +1567,14 @@
 
         function checkAlarms() {
             const now = new Date();
-            const currentTime = now.toLocaleTimeString('en-US', { 
-                hour12: false, 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
+            const currentTime = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
             const currentDay = now.getDay();
             
             alarms.forEach(alarm => {
-                if (alarm.time === currentTime && now.getSeconds() === 0) {
-                    if (alarm.days && alarm.days.includes(currentDay)) {
-                        triggerAlarm(alarm);
-                    }
+                if (alarm.time === currentTime && now.getSeconds() === 0 && alarm.days.includes(currentDay)) {
+                    triggerAlarm(alarm);
                 }
             });
-            
             updateNextPrayer();
         }
 
@@ -1650,82 +1583,33 @@
             const t = translations[currentLang];
             
             document.getElementById('modalTime').innerText = alarm.time;
-            document.getElementById('modalText').innerText = alarm.label || 'Adhan';
+            document.getElementById('modalText').innerText = alarm.label;
             document.getElementById('alarmModal').classList.add('active');
             
-            playAdhan();
+            // Play sound
+            const audio = new Audio('https://www.islamcan.com/audio/adhan/azan1.mp3');
+            audio.loop = true;
+            audio.play().catch(() => {
+                // Fallback beep
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                osc.connect(ctx.destination);
+                osc.frequency.value = 600;
+                osc.start();
+                osc.stop(ctx.currentTime + 0.5);
+            });
             
-            if ("Notification" in window && Notification.permission === "granted") {
-                new Notification(currentLang === 'sv' ? "Islamisk Kalender - Adhan!" : "Islamic Calendar - Adhan!", {
-                    body: `${alarm.label} - ${alarm.time}`,
-                    requireInteraction: true
-                });
-            }
+            if (navigator.vibrate) navigator.vibrate([1000, 500, 1000]);
             
             showNotification(t.alarmTriggered, `${alarm.label} - ${alarm.time}`);
-        }
-
-        function playAdhan() {
-            if (adhanAudio) {
-                adhanAudio.pause();
-                adhanAudio.currentTime = 0;
-            }
-            
-            adhanAudio = new Audio(adhanSounds[currentAdhan]);
-            adhanAudio.loop = true;
-            
-            const playPromise = adhanAudio.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Audio play failed:", error);
-                    playFallbackBeep();
-                });
-            }
-            
-            if (navigator.vibrate) {
-                navigator.vibrate([1000, 500, 1000, 500, 1000]);
-            }
-        }
-
-        function playFallbackBeep() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            
-            const beepInterval = setInterval(() => {
-                if (!currentAlarm) {
-                    clearInterval(beepInterval);
-                    return;
-                }
-                
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = 600;
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.5);
-            }, 1000);
         }
 
         function stopAlarm() {
             currentAlarm = null;
             document.getElementById('alarmModal').classList.remove('active');
-            
-            if (adhanAudio) {
-                adhanAudio.pause();
-                adhanAudio.currentTime = 0;
-            }
-            
-            if (navigator.vibrate) {
-                navigator.vibrate(0);
-            }
+            // Stop all audio
+            document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
+            if (navigator.vibrate) navigator.vibrate(0);
         }
 
         function snoozeAlarm() {
@@ -1734,35 +1618,27 @@
             
             const now = new Date();
             now.setMinutes(now.getMinutes() + 5);
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const newTime = `${hours}:${minutes}`;
+            const newTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
             
-            const snoozeAlarm = {
+            alarms.push({
                 id: Date.now(),
                 time: newTime,
                 label: `${currentAlarm.label} (${t.snooze})`,
                 days: [new Date().getDay()]
-            };
+            });
             
-            alarms.push(snoozeAlarm);
             alarms.sort((a, b) => a.time.localeCompare(b.time));
             localStorage.setItem('islamicAlarms', JSON.stringify(alarms));
             updateAlarmList();
-            
-            showNotification('Snooze', `${t.snooze}: ${newTime}`);
+            showNotification('Snooze', newTime);
         }
 
         function showNotification(title, text) {
             const notif = document.getElementById('notification');
             document.getElementById('notif-title').innerText = title;
             document.getElementById('notif-text').innerText = text;
-            
             notif.classList.add('show');
-            
-            setTimeout(() => {
-                notif.classList.remove('show');
-            }, 4000);
+            setTimeout(() => notif.classList.remove('show'), 3000);
         }
     </script>
 </body>
