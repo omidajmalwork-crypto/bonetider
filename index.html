@@ -461,12 +461,13 @@
                 <div class="tip-content" id="tipContent">
                     Laddar...
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                    <span style="font-size: 0.8rem; color: #666;" id="tipCounter">1 / 20</span>
-                    <button class="btn btn-next" onclick="nextTip()">
-                        Nästa →
-                    </button>
-                </div>
+				
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                   <button class="btn btn-secondary" onclick="prevTip()">← Förra</button>
+                   <span style="font-size:0.8rem; color:#666;" id="tipCounter">1 / 20</span>
+                    <button class="btn btn-next" onclick="nextTip()">Nästa →</button>
+                  </div>
+
             </div>
 
             <!-- Ramadan Tracker Box -->
@@ -628,8 +629,13 @@ async function startApp() {
 // ===== TIPS/DUA FUNKTIONER =====
 function initTips() {
     // Slumpa startindex
-    currentTipIndex = Math.floor(Math.random() * tipsData.length);
-    displayTip();
+        const saved = localStorage.getItem('lastTipIndex');
+        if(saved !== null){
+         currentTipIndex = parseInt(saved);
+}else{
+  currentTipIndex = Math.floor(Math.random() * tipsData.length);
+}
+displayTip();
 }
 
 function displayTip() {
@@ -644,6 +650,11 @@ function displayTip() {
 
 function nextTip() {
     currentTipIndex = (currentTipIndex + 1) % tipsData.length;
+    displayTip();
+}
+	
+function prevTip() {
+    currentTipIndex = (currentTipIndex - 1 + tipsData.length) % tipsData.length;
     displayTip();
 }
 
