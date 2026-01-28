@@ -1469,8 +1469,8 @@
 
                 isAudioReady = true;
                 document.getElementById('audioStatus').innerHTML = isMobile() ? 
-                    '✅ Alarm aktivt (håll skärmen på för bästa resultat)' : 
-                    '✅ Alarm & Ljud aktiverade';
+                    ' ' : 
+                    ' ';
                 document.getElementById('audioStatus').style.color = '#00ff88';
                 
                 const t = translations[currentLang];
@@ -1767,6 +1767,7 @@
             initDatePicker();
             initTips();
             updateClock();
+            renderRamadanCalendar();
             
             // Viktigt: Kolla om vi har sparad plats i localStorage först
             const savedLat = localStorage.getItem('userLat');
