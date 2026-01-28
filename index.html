@@ -392,14 +392,18 @@
             border-radius: 8px;
             color: #666;
         }
-        .calendar-day.fasted {
-            background: rgba(0, 255, 136, 0.3);
-            color: white;
-            font-weight: bold;
-        }
+        
         .calendar-day.today {
             border: 2px solid var(--primary-gold);
         }
+		
+		.calendar-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+        .calendar-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border-radius:8px;cursor:pointer}
+        .calendar-day.fast{background:rgba(0,255,136,.4)}
+        .calendar-day.missed{background:rgba(255,0,0,.4)}
+        .calendar-day.today{border:2px solid var(--primary-gold)}
+        .stats{display:flex;justify-content:space-around;margin:10px 0}
+
     </style>
 </head>
 <body>
@@ -467,23 +471,23 @@
 
             <!-- Ramadan Tracker Box -->
             <div class="ramadan-card">
-                <div class="section-title" style="justify-content: center; margin-bottom: 10px;">
-                    🌙 Ramadan Tracker
-                </div>
-                <div class="streak-counter" id="streakCount">0</div>
-                <div class="streak-label">dagar i rad</div>
-                
-                <div class="fasting-status">
-                    <label class="fast-checkbox" id="fastCheckbox" onclick="toggleFastToday()">
-                        <input type="checkbox" id="fastCheck" onchange="toggleFastToday()">
-                        <span style="font-size: 1.1rem;">Jag har fastat idag</span>
-                    </label>
-                </div>
+    <div class="section-title" style="justify-content: center; margin-bottom: 10px;">
+        🌙 Ramadan Tracker
+    </div>
 
-                <div class="calendar-grid" id="ramadanCalendar">
-                    <!-- Genereras av JS -->
-                </div>
-            </div>
+    <div class="calendar-nav">
+        <button class="btn btn-secondary" onclick="changeMonth(-1)">⬅</button>
+        <div id="monthLabel"></div>
+        <button class="btn btn-secondary" onclick="changeMonth(1)">➡</button>
+    </div>
+
+    <div class="stats">
+        <div>🟢 Fastat: <span id="fastCount">0</span></div>
+        <div>🔴 Missat: <span id="missedCount">0</span></div>
+    </div>
+
+    <div class="calendar-grid" id="calendar"></div>
+</div>
         </div>
 
         <div class="alarm-section">
@@ -614,7 +618,7 @@ async function startApp() {
         
         // Initiera tips och ramadan
         initTips();
-        initRamadanTracker();
+        //initRamadanTracker();
     } catch (e) {
         console.error('Audio init failed:', e);
         alert('Kunde inte aktivera ljud.');
@@ -644,117 +648,60 @@ function nextTip() {
 }
 
 // ===== RAMADAN TRACKER FUNKTIONER =====
-function initRamadanTracker() {
-    renderCalendar();
-    updateStreak();
-    checkTodayFast();
+let currentMonth=new Date().getMonth();
+let currentYear=new Date().getFullYear();
+
+function getRamadanData(){
+ return JSON.parse(localStorage.getItem("ramadanDays")||"{}");
+}
+function saveRamadanData(d){
+ localStorage.setItem("ramadanDays",JSON.stringify(d));
 }
 
-function getFastingData() {
-    return JSON.parse(localStorage.getItem('ramadanFasting') || '{}');
+function changeMonth(dir){
+ currentMonth+=dir;
+ if(currentMonth<0){currentMonth=11;currentYear--;}
+ if(currentMonth>11){currentMonth=0;currentYear++;}
+ renderRamadanCalendar();
 }
 
-function toggleFastToday() {
-    const checkbox = document.getElementById('fastCheck');
-    const isChecked = checkbox.checked;
-    const today = new Date().toISOString().split('T')[0];
-    const fastingData = getFastingData();
-    
-    if (isChecked) {
-        fastingData[today] = true;
-        showNotification('Masha Allah!', 'Din fasta är registrerad');
-    } else {
-        delete fastingData[today];
-    }
-    
-    localStorage.setItem('ramadanFasting', JSON.stringify(fastingData));
-    updateStreak();
-    renderCalendar();
-    
-    // Uppdatera UI
-    const label = document.getElementById('fastCheckbox');
-    if (isChecked) {
-        label.classList.add('checked');
-    } else {
-        label.classList.remove('checked');
-    }
+function renderRamadanCalendar(){
+ const cal=document.getElementById("calendar");
+ cal.innerHTML="";
+ const label=document.getElementById("monthLabel");
+ label.innerText=new Date(currentYear,currentMonth).toLocaleDateString("sv-SE",{month:"long",year:"numeric"});
+ const days=new Date(currentYear,currentMonth+1,0).getDate();
+ const data=getRamadanData();
+ let fast=0,missed=0;
+
+ for(let d=1;d<=days;d++){
+   const date=`${currentYear}-${String(currentMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+   const div=document.createElement("div");
+   div.className="calendar-day";
+   div.innerText=d;
+
+   if(data[date]==1){div.classList.add("fast");fast++;}
+   if(data[date]==2){div.classList.add("missed");missed++;}
+
+   const today=new Date().toISOString().split("T")[0];
+   if(date===today)div.classList.add("today");
+
+   div.onclick=()=>{
+     let v=data[date]||0;
+     v=(v+1)%3;
+     if(v===0)delete data[date]; else data[date]=v;
+     saveRamadanData(data);
+     renderRamadanCalendar();
+   }
+   cal.appendChild(div);
+ }
+
+ document.getElementById("fastCount").innerText=fast;
+ document.getElementById("missedCount").innerText=missed;
 }
 
-function checkTodayFast() {
-    const today = new Date().toISOString().split('T')[0];
-    const fastingData = getFastingData();
-    const checkbox = document.getElementById('fastCheck');
-    const label = document.getElementById('fastCheckbox');
-    
-    if (fastingData[today]) {
-        checkbox.checked = true;
-        label.classList.add('checked');
-    }
-}
+renderRamadanCalendar();
 
-function updateStreak() {
-    const fastingData = getFastingData();
-    let streak = 0;
-    const today = new Date();
-    
-    // Räkna bakåt från idag
-    for (let i = 0; i < 365; i++) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
-        const dateStr = date.toISOString().split('T')[0];
-        
-        if (fastingData[dateStr]) {
-            streak++;
-        } else if (i > 0) {
-            // Om det finns ett hål (ej idag), bryt om det inte är idag
-            break;
-        }
-    }
-    
-    document.getElementById('streakCount').textContent = streak;
-}
-
-function renderCalendar() {
-    const calendar = document.getElementById('ramadanCalendar');
-    const fastingData = getFastingData();
-    const today = new Date().toISOString().split('T')[0];
-    
-    // Visa senaste 14 dagarna och kommande 7
-    let html = '';
-    const currentDate = new Date();
-    
-    // Bakåt 7 dagar
-    for (let i = 7; i > 0; i--) {
-        const d = new Date(currentDate);
-        d.setDate(d.getDate() - i);
-        const dateStr = d.toISOString().split('T')[0];
-        const isFasted = fastingData[dateStr];
-        const isToday = false;
-        
-        html += `<div class="calendar-day ${isFasted ? 'fasted' : ''} ${isToday ? 'today' : ''}" title="${dateStr}">
-            ${d.getDate()}
-        </div>`;
-    }
-    
-    // Idag
-    const todayFasted = fastingData[today];
-    html += `<div class="calendar-day ${todayFasted ? 'fasted' : ''} today" title="Idag">
-        ${currentDate.getDate()}
-    </div>`;
-    
-    // Framåt 7 dagar
-    for (let i = 1; i <= 6; i++) {
-        const d = new Date(currentDate);
-        d.setDate(d.getDate() + i);
-        const dateStr = d.toISOString().split('T')[0];
-        
-        html += `<div class="calendar-day" style="opacity: 0.5;" title="${dateStr}">
-            ${d.getDate()}
-        </div>`;
-    }
-    
-    calendar.innerHTML = html;
-}
 
 // ===== LJUD-FUNKTIONER =====
 function playAdhan(type) {
