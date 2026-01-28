@@ -537,6 +537,86 @@
             box-shadow: 0 0 10px rgba(255,215,0,0.3);
         }
 
+        .adhan-selector {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            flex: 1;
+            min-width: 200px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23FFD700' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 40px;
+        }
+
+        .adhan-selector:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 10px rgba(255,215,0,0.3);
+        }
+
+        .adhan-selector option {
+            background: #0a0e27;
+            color: white;
+            padding: 10px;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            padding: 10px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(255,215,0,0.1);
+        }
+
+        .volume-slider {
+            flex: 1;
+            min-width: 150px;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+
+        .volume-label {
+            color: #888;
+            font-size: 0.85rem;
+            min-width: 40px;
+        }
+
         .btn {
             background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
             border: none;
@@ -555,6 +635,14 @@
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(255,215,0,0.4);
+        }
+
+        .btn-test {
+            background: rgba(255,215,0,0.2);
+            border: 1px solid var(--glass-border);
+            color: var(--primary-gold);
+            padding: 8px 15px;
+            font-size: 0.8rem;
         }
 
         .days-selector {
@@ -630,6 +718,15 @@
             color: white;
         }
 
+        .alarm-sound-indicator {
+            font-size: 0.75rem;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 3px;
+        }
+
         .delete-btn {
             background: rgba(255,0,0,0.2);
             border: 1px solid rgba(255,0,0,0.3);
@@ -639,6 +736,11 @@
             cursor: pointer;
             transition: all 0.3s;
             font-size: 0.8rem;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255,0,0,0.4);
+            transform: scale(1.05);
         }
 
         .alarm-modal {
@@ -667,6 +769,12 @@
             box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
             max-width: 90%;
             width: 400px;
+            animation: modalAppear 0.3s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .alarm-modal-icon {
@@ -853,6 +961,19 @@
                 width: 6px;
                 height: 6px;
             }
+
+            .adhan-selector {
+                min-width: 100%;
+                order: 3;
+            }
+
+            .alarm-controls {
+                flex-direction: column;
+            }
+
+            .alarm-input[type="time"] {
+                min-width: 100%;
+            }
         }
 
         @media (max-width: 480px) {
@@ -876,6 +997,10 @@
 
             .prayer-card {
                 border-radius: 10px;
+            }
+
+            .hero-section {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -982,7 +1107,22 @@
             <div class="alarm-controls">
                 <input type="time" class="alarm-input" id="alarmTime">
                 <input type="text" class="alarm-input" id="alarmLabel" placeholder="Etikett (t.ex. Fajr-bön)">
+                <select class="adhan-selector" id="adhanType">
+                    <option value="makkah">🕋 Makkah (Abdeldjalil)</option>
+                    <option value="madinah">🕌 Madinah (Al-Hussary)</option>
+                    <option value="alaqsa">🤲 Al-Aqsa (Klassisk)</option>
+                    <option value="turkish">🇹🇷 Turkisk (Modern)</option>
+                    <option value="egyptian">🇪🇬 Egyptisk (Abdel Baset)</option>
+                    <option value="beep">🔔 Standard-signal</option>
+                </select>
                 <button class="btn" onclick="addAlarm()" id="add-alarm-btn">Lägg till Larm</button>
+                <button class="btn btn-test" onclick="testAdhanSound()" title="Testa ljudet">▶️ Testa</button>
+            </div>
+
+            <div class="volume-control">
+                <span style="color: #888; font-size: 0.85rem;">🔊 <span id="volume-label">Volym:</span></span>
+                <input type="range" min="0" max="100" value="80" class="volume-slider" id="volumeSlider" oninput="updateAlarmVolume(this.value)">
+                <span style="color: var(--primary-gold); font-size: 0.8rem; min-width: 35px;" id="volumeValue">80%</span>
             </div>
             
             <div class="days-selector" id="daysSelector">
@@ -1051,11 +1191,52 @@
         };
         const noSleep = new NoSleep();
 
+        // Adhan ljud källor
+        const adhanSources = {
+            makkah: {
+                nameSv: 'Makkah',
+                nameEn: 'Makkah',
+                url: 'https://www.islamcan.com/audio/adhan/azan1.mp3',
+                duration: 180
+            },
+            madinah: {
+                nameSv: 'Madinah',
+                nameEn: 'Madinah',
+                url: 'https://www.islamcan.com/audio/adhan/azan2.mp3',
+                duration: 200
+            },
+            alaqsa: {
+                nameSv: 'Al-Aqsa',
+                nameEn: 'Al-Aqsa',
+                url: 'https://www.islamcan.com/audio/adhan/azan3.mp3',
+                duration: 160
+            },
+            turkish: {
+                nameSv: 'Turkisk',
+                nameEn: 'Turkish',
+                url: 'https://www.islamcan.com/audio/adhan/azan4.mp3',
+                duration: 190
+            },
+            egyptian: {
+                nameSv: 'Egyptisk',
+                nameEn: 'Egyptian',
+                url: 'https://www.islamcan.com/audio/adhan/azan5.mp3',
+                duration: 210
+            },
+            beep: {
+                nameSv: 'Standard-signal',
+                nameEn: 'Standard Alert',
+                url: null,
+                duration: 60
+            }
+        };
+
         // Audio context for mobile
         let audioContext = null;
         let currentAudio = null;
         let wakeLock = null;
         let isWakeLockActive = false;
+        let alarmVolume = 0.8;
 
         const translations = {
             sv: {
@@ -1101,7 +1282,10 @@
                 yourLocation: "Din Plats",
                 sweden: "Sverige",
                 keepScreenOn: "Håll skärmen på",
-                screenOn: "Skärm påslagen"
+                screenOn: "Skärm påslagen",
+                volume: "Volym",
+                testSound: "Testar ljud...",
+                adhanPlaying: "Spelar Adhan"
             },
             en: {
                 title: "ISLAMIC CALENDAR",
@@ -1146,7 +1330,10 @@
                 yourLocation: "Your Location",
                 sweden: "Sweden",
                 keepScreenOn: "Keep screen on",
-                screenOn: "Screen on"
+                screenOn: "Screen on",
+                volume: "Volume",
+                testSound: "Testing sound...",
+                adhanPlaying: "Playing Adhan"
             }
         };
 
@@ -1453,6 +1640,7 @@
             document.getElementById('sv-btn').classList.toggle('active', lang === 'sv');
             document.getElementById('en-btn').classList.toggle('active', lang === 'en');
             document.getElementById('loc-my').innerText = translations[lang].myLocation;
+            document.getElementById('volume-label').innerText = translations[lang].volume + ':';
             
             if (!isUserLocation && (currentLocation.city === 'Stockholm' || currentLocation.city === undefined)) {
                 document.getElementById('loc-stockholm').innerHTML = `<span class="pulse"></span> ${translations[lang].stockholm}`;
@@ -1739,9 +1927,35 @@
             }
         }
 
+        // Volym kontroll
+        function updateAlarmVolume(value) {
+            alarmVolume = value / 100;
+            document.getElementById('volumeValue').innerText = value + '%';
+            if (currentAudio) {
+                currentAudio.volume = alarmVolume;
+            }
+        }
+
+        // Testa Adhan ljud
+        function testAdhanSound() {
+            const t = translations[currentLang];
+            const adhanType = document.getElementById('adhanType').value;
+            
+            showNotification(t.testSound, adhanSources[adhanType][currentLang === 'sv' ? 'nameSv' : 'nameEn']);
+            playAdhan(adhanType);
+            
+            // Stoppa efter 5 sekunder (test)
+            setTimeout(() => {
+                if (currentAudio) {
+                    stopAlarm();
+                }
+            }, 5000);
+        }
+
         function addAlarm() {
             const timeInput = document.getElementById('alarmTime');
             const labelInput = document.getElementById('alarmLabel');
+            const adhanSelect = document.getElementById('adhanType');
             const t = translations[currentLang];
             
             if (!timeInput.value) {
@@ -1754,11 +1968,17 @@
                 return;
             }
             
+            const adhanType = adhanSelect.value;
+            const adhanName = currentLang === 'sv' ? adhanSources[adhanType].nameSv : adhanSources[adhanType].nameEn;
+            
             const alarm = {
                 id: Date.now(),
                 time: timeInput.value,
                 label: labelInput.value || 'Adhan',
-                days: [...selectedDays]
+                days: [...selectedDays],
+                adhanType: adhanType,
+                adhanName: adhanName,
+                volume: alarmVolume
             };
             
             alarms.push(alarm);
@@ -1768,9 +1988,9 @@
             updateAlarmList();
             timeInput.value = '';
             labelInput.value = '';
-            showNotification(t.alarmSet, `${t.alarmSetFor} ${alarm.time} ${formatDays(alarm.days)}`);
             
-            // Aktivera wake lock automatiskt när man sätter larm
+            showNotification(t.alarmSet, `${t.alarmSetFor} ${alarm.time} - ${alarm.adhanName}`);
+            
             if (!isWakeLockActive) {
                 toggleWakeLock();
             }
@@ -1793,15 +2013,22 @@
                 return;
             }
             
-            list.innerHTML = alarms.map(alarm => `
-                <div class="alarm-item">
-                    <div>
-                        <div class="alarm-time">${alarm.time} <span style="color: var(--primary-gold); font-size: 0.8rem;">${formatDays(alarm.days)}</span></div>
-                        <div style="font-size: 0.8rem; color: #888;">${alarm.label}</div>
+            list.innerHTML = alarms.map(alarm => {
+                const soundIcon = alarm.adhanType === 'beep' ? '🔔' : '🎵';
+                const soundName = alarm.adhanName || (alarm.adhanType ? adhanSources[alarm.adhanType][currentLang === 'sv' ? 'nameSv' : 'nameEn'] : 'Adhan');
+                return `
+                    <div class="alarm-item">
+                        <div>
+                            <div class="alarm-time">${alarm.time} <span style="color: var(--primary-gold); font-size: 0.8rem;">${formatDays(alarm.days)}</span></div>
+                            <div style="font-size: 0.8rem; color: #888;">${alarm.label}</div>
+                            <div class="alarm-sound-indicator">
+                                ${soundIcon} ${soundName} ${alarm.volume ? Math.round(alarm.volume * 100) + '%' : ''}
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteAlarm(${alarm.id})">${t.delete}</button>
                     </div>
-                    <button class="delete-btn" onclick="deleteAlarm(${alarm.id})">${t.delete}</button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function deleteAlarm(id) {
@@ -1840,21 +2067,38 @@
             document.getElementById('modalText').innerText = alarm.label;
             document.getElementById('alarmModal').classList.add('active');
             
-            playAdhan();
+            // Spela vald Adhan eller standard
+            const adhanType = alarm.adhanType || 'makkah';
+            playAdhan(adhanType);
             
-            if (navigator.vibrate) navigator.vibrate([1000, 500, 1000]);
+            if (navigator.vibrate) navigator.vibrate([1000, 500, 1000, 500, 1000]);
             
-            showNotification(t.alarmTriggered, `${alarm.label} - ${alarm.time}`);
+            showNotification(t.alarmTriggered, `${alarm.label} - ${alarm.time} (${alarm.adhanName || 'Adhan'})`);
         }
 
-        function playAdhan() {
+        function playAdhan(adhanType = 'makkah') {
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio = null;
             }
             
-            currentAudio = new Audio('https://www.islamcan.com/audio/adhan/azan1.mp3');
-            currentAudio.loop = true;
+            // Om beep vald, använd fallback
+            if (adhanType === 'beep' || !adhanSources[adhanType]) {
+                playFallbackBeep();
+                return;
+            }
+            
+            const adhanUrl = adhanSources[adhanType].url;
+            
+            currentAudio = new Audio();
+            currentAudio.src = adhanUrl;
+            currentAudio.volume = alarmVolume;
+            currentAudio.loop = false;
+            
+            // Hantera avslutning
+            currentAudio.onended = function() {
+                // Ljudet är slut
+            };
             
             const playPromise = currentAudio.play();
             
@@ -1881,12 +2125,13 @@
                 oscillator.frequency.value = 600;
                 oscillator.type = 'sine';
                 
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(alarmVolume * 0.3, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
                 
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.5);
                 
+                // Fortsätt pipa om modal fortfarande är aktiv
                 setTimeout(() => {
                     if (document.getElementById('alarmModal').classList.contains('active')) {
                         playFallbackBeep();
@@ -1923,7 +2168,9 @@
                 id: Date.now(),
                 time: newTime,
                 label: `${currentAlarm.label} (${t.snooze})`,
-                days: [new Date().getDay()]
+                days: [new Date().getDay()],
+                adhanType: currentAlarm.adhanType,
+                adhanName: currentAlarm.adhanName
             });
             
             alarms.sort((a, b) => a.time.localeCompare(b.time));
