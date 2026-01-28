@@ -269,6 +269,12 @@
             margin-bottom: 30px;
         }
 
+        @media (max-width: 768px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .clock-card {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -411,11 +417,11 @@
             height: 8px;
             background: #00ff88;
             border-radius: 50%;
-            animation: pulse 2s infinite;
+            animation: pulse-animation 2s infinite;
             box-shadow: 0 0 10px #00ff88;
         }
 
-        @keyframes pulse {
+        @keyframes pulse-animation {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(1.2); }
         }
@@ -443,6 +449,18 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .prayer-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 400px) {
+            .prayer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         .prayer-card {
@@ -645,6 +663,11 @@
             font-size: 0.8rem;
         }
 
+        .btn-test:hover {
+            background: var(--primary-gold);
+            color: #0a0e27;
+        }
+
         .days-selector {
             display: flex;
             gap: 6px;
@@ -834,7 +857,6 @@
             margin-top: 5px;
         }
 
-        /* Nya styles för Wake Lock */
         .wake-lock-btn {
             position: fixed;
             bottom: 20px;
@@ -865,7 +887,7 @@
             height: 8px;
             background: #00ff88;
             border-radius: 50%;
-            animation: pulse 2s infinite;
+            animation: pulse-animation 2s infinite;
         }
 
         .info-banner {
@@ -883,125 +905,74 @@
             display: block;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-                padding-bottom: 80px;
-            }
-
-            .wake-lock-btn {
-                bottom: 10px;
-                right: 10px;
-                padding: 10px 15px;
-                font-size: 0.75rem;
-            }
-
-            h1 {
-                font-size: 1.8rem;
-            }
-
-            .hero-section {
-                gap: 10px;
-            }
-
-            .clock-card {
-                padding: 20px 10px;
-                border-radius: 20px;
-            }
-
-            .time-display {
-                font-size: 2rem;
-            }
-
-            .date-display {
-                font-size: 0.9rem;
-            }
-
-            .islamic-date {
-                font-size: 0.8rem;
-            }
-
-            .section-title {
-                font-size: 1.1rem;
-            }
-
-            .prayer-card {
-                padding: 10px 2px;
-            }
-
-            .prayer-name {
-                font-size: 0.6rem;
-            }
-
-            .prayer-time {
-                font-size: 0.9rem;
-            }
-
-            .prayer-icon {
-                font-size: 1rem;
-            }
-
-            .day-btn {
-                width: 32px;
-                height: 32px;
-                font-size: 0.7rem;
-            }
-
-            .city-input {
-                width: 150px;
-                font-size: 0.8rem;
-            }
-
-            .loc-btn {
-                padding: 8px 15px;
-                font-size: 0.8rem;
-            }
-
-            .loc-btn .pulse {
-                width: 6px;
-                height: 6px;
-            }
-
-            .adhan-selector {
-                min-width: 100%;
-                order: 3;
-            }
-
-            .alarm-controls {
-                flex-direction: column;
-            }
-
-            .alarm-input[type="time"] {
-                min-width: 100%;
-            }
+        /* Audio Unlock Modal */
+        .audio-unlock-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 39, 0.98);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
         }
 
-        @media (max-width: 480px) {
-            .controls-row {
-                gap: 8px;
-            }
+        .audio-unlock-modal.active {
+            display: flex;
+        }
 
-            .lang-btn {
-                padding: 8px 15px;
-                font-size: 0.8rem;
-            }
+        .audio-unlock-content {
+            max-width: 400px;
+            animation: fadeInUp 0.5s ease-out;
+        }
 
-            .time-display {
-                font-size: 1.8rem;
-                letter-spacing: 1px;
-            }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-            .prayer-grid {
-                gap: 5px;
-            }
+        .audio-unlock-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse-animation 2s infinite;
+        }
 
-            .prayer-card {
-                border-radius: 10px;
-            }
+        .audio-unlock-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: var(--primary-gold);
+            margin-bottom: 15px;
+        }
 
-            .hero-section {
-                grid-template-columns: 1fr;
-            }
+        .audio-unlock-text {
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .audio-unlock-btn {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            border: none;
+            color: #0a0e27;
+            padding: 15px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(255,215,0,0.4);
+        }
+
+        .audio-unlock-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(255,215,0,0.6);
         }
 
         .loading {
@@ -1022,12 +993,55 @@
             0%, 100% { transform: rotate(-5deg); }
             50% { transform: rotate(5deg); }
         }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                padding-bottom: 80px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .clock-card {
+                padding: 20px 10px;
+            }
+
+            .time-display {
+                font-size: 2rem;
+            }
+
+            .adhan-selector {
+                min-width: 100%;
+            }
+
+            .alarm-controls {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="stars" id="stars"></div>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
+
+    <!-- Audio Unlock Modal för mobil -->
+    <div class="audio-unlock-modal" id="audioUnlockModal">
+        <div class="audio-unlock-content">
+            <div class="audio-unlock-icon">🔊</div>
+            <div class="audio-unlock-title" id="audioUnlockTitle">Aktivera Ljud</div>
+            <div class="audio-unlock-text" id="audioUnlockText">
+                För att Adhan (böneutrop) ska kunna spelas upp när larmet ringer, 
+                behöver du trycka på knappen nedan för att aktivera ljudet. 
+                Detta krävs endast en gång.
+            </div>
+            <button class="audio-unlock-btn" onclick="unlockAudioContext()" id="audioUnlockBtn">
+                Aktivera Ljud 🔓
+            </button>
+        </div>
+    </div>
 
     <div class="container">
         <div class="header">
@@ -1171,11 +1185,6 @@
             video.setAttribute('muted', '');
             video.setAttribute('loop', '');
             video.src = "data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAACKBtZGF0AAACwQYF//973tP//e0eOQ8YORI6Vz2XWbyHPCz8/x2cGf//7+5kZ////////5wf//////8yZD//////9/dnP//+5g//////+5nv//+Iycgn//5sPf//6szr//9lNf//7ePL//8rKv//4wz7//9pPf//6cfz//8t3v//96TH//8yzv//9+Mb//8vtv//+UEP//86Bv//+EQf//9JxP//xkr//9GI///8eKv//+pc///w47///sbf//6h8///4iLf//+nT///w+P///HQf//9q1P//xPC///7HX//+BK///4c5///1Ib///8fR///+ED///0Z0///9Bn///7CP///uLT///+YO///7yn///4dB///8Yx///7tC///8cH///+BK///4HC///8/P///7cv///tR/////9n///////+Xv///+Af///////5af///8Tv///6CX///2Fj///5R6///9VYf///Qpn///vD3///7DD///yyP///0qf///Wxv///sNr///wVH///2Bb///qA3///9E/////8pf///8vj///+UYf///LJ///8qKf///Kuf/+";
-            video.style.position = 'absolute';
-            video.style.opacity = '0';
-            video.style.pointerEvents = 'none';
-            video.style.width = '1px';
-            video.style.height = '1px';
             document.body.appendChild(video);
             
             this.enable = function() {
@@ -1231,11 +1240,11 @@
             }
         };
 
-        // Audio context for mobile
         let audioContext = null;
         let currentAudio = null;
         let wakeLock = null;
         let isWakeLockActive = false;
+        let isAudioUnlocked = false;
         let alarmVolume = 0.8;
 
         const translations = {
@@ -1285,7 +1294,10 @@
                 screenOn: "Skärm påslagen",
                 volume: "Volym",
                 testSound: "Testar ljud...",
-                adhanPlaying: "Spelar Adhan"
+                adhanPlaying: "Spelar Adhan",
+                audioUnlockTitle: "Aktivera Ljud",
+                audioUnlockText: "För att Adhan (böneutrop) ska kunna spelas upp när larmet ringer, behöver du trycka på knappen för att aktivera ljudet. Detta krävs endast en gång.",
+                audioUnlockBtn: "Aktivera Ljud 🔓"
             },
             en: {
                 title: "ISLAMIC CALENDAR",
@@ -1333,7 +1345,10 @@
                 screenOn: "Screen on",
                 volume: "Volume",
                 testSound: "Testing sound...",
-                adhanPlaying: "Playing Adhan"
+                adhanPlaying: "Playing Adhan",
+                audioUnlockTitle: "Enable Audio",
+                audioUnlockText: "For the Adhan (call to prayer) to play when the alarm rings, you need to press the button below to enable audio. This is only required once.",
+                audioUnlockBtn: "Enable Audio 🔓"
             }
         };
 
@@ -1357,6 +1372,82 @@
         let isOffline = false;
         let isUserLocation = false;
 
+        // Kolla om vi är på mobil och om ljud inte är upplåst än
+        function checkAudioUnlock() {
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const audioUnlocked = localStorage.getItem('audioUnlocked');
+            
+            if (isMobile && !audioUnlocked) {
+                showAudioUnlockModal();
+            } else {
+                isAudioUnlocked = true;
+                setupAudio();
+            }
+        }
+
+        function showAudioUnlockModal() {
+            const modal = document.getElementById('audioUnlockModal');
+            modal.classList.add('active');
+            updateAudioUnlockText();
+        }
+
+        function updateAudioUnlockText() {
+            const t = translations[currentLang];
+            document.getElementById('audioUnlockTitle').innerText = t.audioUnlockTitle;
+            document.getElementById('audioUnlockText').innerText = t.audioUnlockText;
+            document.getElementById('audioUnlockBtn').innerText = t.audioUnlockBtn;
+        }
+
+        async function unlockAudioContext() {
+            try {
+                // Skapa audio context
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
+                
+                // Spela ett tyst ljud för att låsa upp Web Audio
+                const buffer = audioContext.createBuffer(1, 1, 22050);
+                const source = audioContext.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioContext.destination);
+                source.start();
+                
+                // Försök spela ett mycket kort ljud med HTML5 Audio också
+                const tempAudio = new Audio();
+                tempAudio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAA==";
+                tempAudio.play().catch(e => {});
+                
+                isAudioUnlocked = true;
+                localStorage.setItem('audioUnlocked', 'true');
+                
+                // Dölj modal
+                document.getElementById('audioUnlockModal').classList.remove('active');
+                
+                // Aktivera wake lock också direkt
+                if (!isWakeLockActive) {
+                    toggleWakeLock();
+                }
+                
+                showNotification(
+                    currentLang === 'sv' ? 'Ljud aktiverat' : 'Audio Enabled',
+                    currentLang === 'sv' ? 'Du kan nu använda Adhan-ljud för larm' : 'You can now use Adhan sounds for alarms'
+                );
+                
+            } catch (error) {
+                console.error("Audio unlock failed:", error);
+            }
+        }
+
+        function setupAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             createStars();
             initDatePicker();
@@ -1370,30 +1461,16 @@
                 Notification.requestPermission();
             }
 
+            // Kolla om vi behöver låsa upp ljud på mobil
+            setTimeout(checkAudioUnlock, 500);
+
             // Visa info-banner på mobil
             if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
                 setTimeout(() => {
                     document.getElementById('wakeLockInfo').classList.add('show');
                 }, 2000);
             }
-
-            // Unlock audio context on mobile
-            document.body.addEventListener('click', unlockAudio, { once: true });
-            document.body.addEventListener('touchstart', unlockAudio, { once: true });
         });
-
-        function unlockAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-            // Försök aktivera wake lock automatiskt vid första interaktion
-            if (!isWakeLockActive && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                toggleWakeLock();
-            }
-        }
 
         // Wake Lock API
         async function toggleWakeLock() {
@@ -1420,7 +1497,6 @@
                             text.innerText = t.keepScreenOn;
                         });
                     } else {
-                        // Fallback för iOS/äldre enheter
                         noSleep.enable();
                         isWakeLockActive = true;
                         btn.classList.add('active');
@@ -1430,7 +1506,6 @@
                     }
                 } catch (err) {
                     console.error('Wake Lock failed:', err);
-                    showNotification('Error', currentLang === 'sv' ? 'Kunde inte hålla skärmen på' : 'Could not keep screen on');
                 }
             } else {
                 if (wakeLock) await wakeLock.release();
@@ -1648,7 +1723,6 @@
                 document.getElementById('loc-stockholm').innerHTML = `<span class="pulse"></span> ${currentLocation.city}`;
             }
             
-            // Uppdatera wake lock text
             if (isWakeLockActive) {
                 document.getElementById('wakeText').innerText = translations[lang].screenOn;
             } else {
@@ -1661,6 +1735,7 @@
             loadPrayerTimes();
             updateAlarmList();
             updateTodayIndicator();
+            updateAudioUnlockText();
         }
 
         function updateTexts() {
@@ -1927,7 +2002,6 @@
             }
         }
 
-        // Volym kontroll
         function updateAlarmVolume(value) {
             alarmVolume = value / 100;
             document.getElementById('volumeValue').innerText = value + '%';
@@ -1936,15 +2010,18 @@
             }
         }
 
-        // Testa Adhan ljud
         function testAdhanSound() {
             const t = translations[currentLang];
             const adhanType = document.getElementById('adhanType').value;
             
+            if (!isAudioUnlocked) {
+                showNotification('Info', currentLang === 'sv' ? 'Tryck först på "Aktivera Ljud" knappen' : 'Please press "Enable Audio" first');
+                return;
+            }
+            
             showNotification(t.testSound, adhanSources[adhanType][currentLang === 'sv' ? 'nameSv' : 'nameEn']);
             playAdhan(adhanType);
             
-            // Stoppa efter 5 sekunder (test)
             setTimeout(() => {
                 if (currentAudio) {
                     stopAlarm();
@@ -1957,6 +2034,11 @@
             const labelInput = document.getElementById('alarmLabel');
             const adhanSelect = document.getElementById('adhanType');
             const t = translations[currentLang];
+            
+            if (!isAudioUnlocked) {
+                showNotification('Info', currentLang === 'sv' ? 'Tryck först på "Aktivera Ljud" knappen först' : 'Please press "Enable Audio" button first');
+                return;
+            }
             
             if (!timeInput.value) {
                 showNotification('Error', t.enterTime);
@@ -2046,7 +2128,6 @@
                 if (alarm.time === currentTime && now.getSeconds() === 0 && alarm.days.includes(currentDay)) {
                     triggerAlarm(alarm);
                     
-                    // Visa systemnotis om tillåtet
                     if ('Notification' in window && Notification.permission === 'granted') {
                         new Notification('🕌 ' + alarm.label, {
                             body: currentLang === 'sv' ? `Klockan är ${alarm.time} - Dags för bön` : `It's ${alarm.time} - Time to pray`,
@@ -2082,7 +2163,6 @@
                 currentAudio = null;
             }
             
-            // Om beep vald, använd fallback
             if (adhanType === 'beep' || !adhanSources[adhanType]) {
                 playFallbackBeep();
                 return;
@@ -2095,10 +2175,7 @@
             currentAudio.volume = alarmVolume;
             currentAudio.loop = false;
             
-            // Hantera avslutning
-            currentAudio.onended = function() {
-                // Ljudet är slut
-            };
+            currentAudio.onended = function() {};
             
             const playPromise = currentAudio.play();
             
@@ -2131,7 +2208,6 @@
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.5);
                 
-                // Fortsätt pipa om modal fortfarande är aktiv
                 setTimeout(() => {
                     if (document.getElementById('alarmModal').classList.contains('active')) {
                         playFallbackBeep();
