@@ -1474,7 +1474,8 @@
                 document.getElementById('audioStatus').style.color = '#00ff88';
                 
                 const t = translations[currentLang];
-                showNotification(t.alarmSet, t.alarmSet);
+                showNotification('✅ ' + (currentLang === 'sv' ? 'System redo' : 'System ready'), 
+                 currentLang === 'sv' ? 'Adhan & alarm aktiverade' : 'Adhan & alarms activated');
                 
                 if (isMobile()) {
                     setTimeout(() => toggleWakeLock(), 1000);
