@@ -411,6 +411,45 @@
         .calendar-day.today{border:2px solid var(--primary-gold)}
         .stats{display:flex;justify-content:space-around;margin:10px 0}
 
+		.lang-toggle button,
+.location-toggle button {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s;
+}
+
+.lang-toggle button.active {
+  background: var(--primary-gold);
+  color: #0a0e27;
+}
+
+.lang-toggle button:not(.active) {
+  background: rgba(255,255,255,0.1);
+  color: #ccc;
+}
+
+.location-toggle span {
+  margin-right: 8px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.location-toggle button {
+  background: rgba(255,255,255,0.1);
+  color: #ccc;
+  margin-left: 4px;
+}
+
+.location-toggle button:hover {
+  background: var(--primary-gold);
+  color: #0a0e27;
+}
+
+
     </style>
 </head>
 <body>
@@ -436,10 +475,19 @@
             </div>
         </div>
 
-		<div style="text-align:center; margin-bottom:10px;">
-  <span id="cityDisplay" style="font-size:0.9rem; opacity:0.8;"></span>
-  <br>
-  <button class="btn btn-secondary" onclick="changeCity()">Byt stad</button>
+	<div class="top-bar" style="text-align:center; margin-bottom:15px;">
+  <!-- Språk -->
+  <div class="lang-toggle" style="display:inline-block; margin-right:15px;">
+    <button id="svBtn" class="active" onclick="setLanguage('sv')">Svenska</button>
+    <button id="enBtn" onclick="setLanguage('en')">English</button>
+  </div>
+
+  <!-- Plats -->
+  <div class="location-toggle" style="display:inline-block;">
+    <span id="currentCity">📍 Stockholm</span>
+    <button onclick="useMyLocation()">Min Plats</button>
+    <button onclick="searchCity()">Sök</button>
+  </div>
 </div>
 
 
@@ -1081,6 +1129,54 @@ renderAlarms();
 loadPrayerTimes();
 setInterval(updateClock,1000);
 if('Notification' in window) Notification.requestPermission();
+
+// --- Språkval ---
+let currentLang = localStorage.getItem("lang") || "sv";
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem("lang", lang);
+  document.getElementById("svBtn").classList.toggle("active", lang === "sv");
+  document.getElementById("enBtn").classList.toggle("active", lang === "en");
+
+  // Uppdatera bönetider om du vill med nytt språk
+  loadPrayerTimes();
+}
+
+// --- Plats ---
+let currentCity = localStorage.getItem("cityName") || "Stockholm";
+document.getElementById("currentCity").innerText = "📍 " + currentCity;
+
+async function useMyLocation() {
+  if (!navigator.geolocation) return alert("GPS stöds inte");
+  navigator.geolocation.getCurrentPosition(pos => {
+      localStorage.setItem("lat", pos.coords.latitude);
+      localStorage.setItem("lon", pos.coords.longitude);
+      localStorage.setItem("cityName", "Min Plats");
+      document.getElementById("currentCity").innerText = "📍 Min Plats";
+      loadPrayerTimes();
+  }, () => alert("Kunde inte hämta plats"));
+}
+
+async function searchCity() {
+  const city = prompt("Ange stad:");
+  if (!city) return;
+  const country = prompt("Ange land (valfritt):") || "";
+  const geoRes = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city + " " + country)}`
+  );
+  const geoData = await geoRes.json();
+  if (!geoData.length) return alert("Hittade inte staden");
+
+  const lat = geoData[0].lat;
+  const lon = geoData[0].lon;
+  localStorage.setItem("lat", lat);
+  localStorage.setItem("lon", lon);
+  localStorage.setItem("cityName", city);
+  document.getElementById("currentCity").innerText = "📍 " + city;
+  loadPrayerTimes();
+}
+	
 </script>
 </body>
 </html>
