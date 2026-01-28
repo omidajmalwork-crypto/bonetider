@@ -449,369 +449,349 @@
     </div>
 
     <script>
-        // Globala variabler
-        let audioContext = null;
-        let currentAudio = null;
-        let isAudioReady = false;
-        let alarmVolume = 0.8;
-        let alarms = JSON.parse(localStorage.getItem('myPrayerAlarms')) || [];
-        let selectedDays = [0,1,2,3,4,5,6];
-        let prayers = {};
+    // Globala variabler
+    let audioContext = null;
+    let currentAudio = null;
+    let isAudioReady = false;
+    let alarmVolume = 0.8;
+    let alarms = JSON.parse(localStorage.getItem('myPrayerAlarms')) || [];
+    let selectedDays = [0,1,2,3,4,5,6];
+    let prayers = {};
+    const adhanAudios = {}; // Lagrar preloaded ljud
 
-        // Adhan-källor
-        const adhanFiles = {
-            makkah: 'https://www.islamcan.com/audio/adhan/azan1.mp3',
-            madinah: 'https://www.islamcan.com/audio/adhan/azan2.mp3',
-            alaqsa: 'https://www.islamcan.com/audio/adhan/azan3.mp3',
-            turkish: 'https://www.islamcan.com/audio/adhan/azan4.mp3',
-            egyptian: 'https://www.islamcan.com/audio/adhan/azan5.mp3'
+    // Adhan-ljud
+    const adhanFiles = {
+        makkah: 'https://www.islamcan.com/audio/adhan/azan1.mp3',
+        madinah: 'https://www.islamcan.com/audio/adhan/azan2.mp3',
+        alaqsa: 'https://www.islamcan.com/audio/adhan/azan3.mp3',
+        turkish: 'https://www.islamcan.com/audio/adhan/azan4.mp3',
+        egyptian: 'https://www.islamcan.com/audio/adhan/azan5.mp3'
+    };
+
+    // ===== START APP =====
+    async function startApp() {
+        try {
+            // Dölj overlay
+            document.getElementById('startOverlay').classList.add('hidden');
+
+            // Initiera AudioContext
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            // Resume iOS AudioContext
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+
+            // Spela tyst ljud för unlock
+            const buffer = audioContext.createBuffer(1, 1, 22050);
+            const source = audioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(audioContext.destination);
+            source.start();
+
+            // Preloada Adhan-ljud och spara i adhanAudios
+            Object.entries(adhanFiles).forEach(([key, url]) => {
+                const audio = new Audio(url);
+                audio.volume = alarmVolume;
+                audio.playsInline = true;
+                adhanAudios[key] = audio;
+            });
+
+            isAudioReady = true;
+            document.getElementById('audioStatus').innerHTML = '✅ Alarm aktivt - Adhan kommer spelas';
+            document.getElementById('audioStatus').style.color = '#00ff88';
+
+            showNotification('Klar!', 'Böneutrop är nu aktiverade. Tryck på testknappen för att prova ljud.');
+
+            // Starta wake lock
+            requestWakeLock();
+        } catch (e) {
+            console.error('Audio init failed:', e);
+            alert('Kunde inte aktivera ljud. Försök uppdatera sidan.');
+        }
+    }
+
+    // ===== LJUD-FUNKTION =====
+    function playAdhan(type) {
+        if (!isAudioReady) {
+            document.getElementById('startOverlay').classList.remove('hidden');
+            return;
+        }
+
+        // Stoppa tidigare
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            currentAudio = null;
+        }
+
+        if (type === 'beep') {
+            playBeepLoop();
+            return;
+        }
+
+        currentAudio = adhanAudios[type] || adhanAudios['makkah'];
+        currentAudio.currentTime = 0;
+        currentAudio.play().catch(err => {
+            console.log('Play blocked:', err);
+            playBeepLoop();
+        });
+    }
+
+    function playBeepLoop() {
+        if (!audioContext) return;
+
+        const playBeep = () => {
+            if (!isAudioReady) return;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.frequency.value = 800;
+            gain.gain.setValueAtTime(alarmVolume * 0.3, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioContext.currentTime + 0.3);
         };
 
-        // ===== KRITISK FUNKTION: Starta appen =====
-        async function startApp() {
-            try {
-                // Dölj overlay
-                document.getElementById('startOverlay').classList.add('hidden');
-                
-                // Initiera AudioContext
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Väck audio context (iOS krav)
-                if (audioContext.state === 'suspended') {
-                    await audioContext.resume();
-                }
-                
-                // Spela tyst ljud för att låsa upp
-                const buffer = audioContext.createBuffer(1, 1, 22050);
-                const source = audioContext.createBufferSource();
-                source.buffer = buffer;
-                source.connect(audioContext.destination);
-                source.start();
-                
-                // Ladda och förbered alla Adhan-ljud (pre-cache)
-                Object.values(adhanFiles).forEach(url => {
-                    const audio = new Audio();
-                    audio.src = url;
-                    audio.load(); // Förhandsladda
-                });
-                
-                isAudioReady = true;
-                document.getElementById('audioStatus').innerHTML = '✅ Alarm aktivt - Adhan kommer att spelas';
-                document.getElementById('audioStatus').style.color = '#00ff88';
-                
-                showNotification('Klar!', 'Böneutrop är nu aktiverade. Du kan stänga webbläsaren, alarmen fungerar ändå.');
-                
-                // Starta wake lock om möjligt
-                requestWakeLock();
-                
-            } catch (e) {
-                console.error('Audio init failed:', e);
-                alert('Kunde inte aktivera ljud. Försök uppdatera sidan.');
-            }
+        playBeep();
+        window.beepInterval = setInterval(playBeep, 1000);
+    }
+
+    function stopAlarm() {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            currentAudio = null;
+        }
+        if (window.beepInterval) clearInterval(window.beepInterval);
+        document.getElementById('alarmModal').classList.remove('active');
+        if (navigator.vibrate) navigator.vibrate(0);
+    }
+
+    function testSound() {
+        if (!isAudioReady) {
+            alert('Tryck på "Aktivera Alarm & Ljud" först!');
+            return;
+        }
+        const type = document.getElementById('adhanType').value;
+        showNotification('Testar', 'Spelar upp test...');
+        playAdhan(type);
+    }
+
+    // ===== ALARM-HANTERING =====
+    function addAlarm() {
+        if (!isAudioReady) {
+            document.getElementById('startOverlay').classList.remove('hidden');
+            return;
         }
 
-        // ===== LJUD-FUNKTIONER =====
-        function playAdhan(type) {
-            if (!isAudioReady) {
-                // Om vi inte har startat än, visa overlay igen
-                document.getElementById('startOverlay').classList.remove('hidden');
-                return;
-            }
+        const time = document.getElementById('alarmTime').value;
+        const label = document.getElementById('alarmLabel').value || 'Bön';
+        const type = document.getElementById('adhanType').value;
 
-            // Stoppa tidigare
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
-            }
-
-            if (type === 'beep') {
-                playBeepLoop();
-                return;
-            }
-
-            const url = adhanFiles[type] || adhanFiles.makkah;
-            currentAudio = new Audio(url);
-            currentAudio.volume = alarmVolume;
-            
-            currentAudio.play().catch(err => {
-                console.log('Play blocked:', err);
-                // Fallback till beep
-                playBeepLoop();
-            });
+        if (!time) {
+            showNotification('Fel', 'Välj en tid först');
+            return;
         }
 
-        function playBeepLoop() {
-            // Spela beep varje sekund tills stoppad
-            const playBeep = () => {
-                if (!isAudioReady) return;
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(audioContext.destination);
-                osc.frequency.value = 800;
-                gain.gain.setValueAtTime(alarmVolume * 0.3, audioContext.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                osc.start();
-                osc.stop(audioContext.currentTime + 0.3);
-            };
-            
-            playBeep();
-            window.beepInterval = setInterval(playBeep, 1000);
-        }
+        const alarm = {
+            id: Date.now(),
+            time: time,
+            label: label,
+            type: type,
+            days: [...selectedDays],
+            active: true
+        };
 
-        function stopAlarm() {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
-            }
-            if (window.beepInterval) {
-                clearInterval(window.beepInterval);
-            }
-            document.getElementById('alarmModal').classList.remove('active');
-            if (navigator.vibrate) navigator.vibrate(0);
-        }
+        alarms.push(alarm);
+        alarms.sort((a,b) => a.time.localeCompare(b.time));
+        localStorage.setItem('myPrayerAlarms', JSON.stringify(alarms));
 
-        function testSound() {
-            const type = document.getElementById('adhanType').value;
-            showNotification('Testar', 'Spelar upp test...');
-            playAdhan(type);
-        }
-
-        // ===== ALARM-HANTERING =====
-        function addAlarm() {
-            if (!isAudioReady) {
-                document.getElementById('startOverlay').classList.remove('hidden');
-                return;
-            }
-
-            const time = document.getElementById('alarmTime').value;
-            const label = document.getElementById('alarmLabel').value || 'Bön';
-            const type = document.getElementById('adhanType').value;
-
-            if (!time) {
-                showNotification('Fel', 'Välj en tid först');
-                return;
-            }
-
-            const alarm = {
-                id: Date.now(),
-                time: time,
-                label: label,
-                type: type,
-                days: [...selectedDays],
-                active: true
-            };
-
-            alarms.push(alarm);
-            alarms.sort((a,b) => a.time.localeCompare(b.time));
-            localStorage.setItem('myPrayerAlarms', JSON.stringify(alarms));
-            
-            renderAlarms();
-            showNotification('Sparat!', `${label} kl ${time} med ${type} Adhan`);
-        }
-
-        function deleteAlarm(id) {
-            alarms = alarms.filter(a => a.id !== id);
-            localStorage.setItem('myPrayerAlarms', JSON.stringify(alarms));
-            renderAlarms();
-        }
-
-        function renderAlarms() {
-            const container = document.getElementById('alarmList');
-            if (alarms.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Inga alarm inställda än</div>';
-                return;
-            }
-
-            container.innerHTML = alarms.map(alarm => `
-                <div class="alarm-item">
-                    <div>
-                        <div style="font-family: Orbitron; font-size: 1.3rem; color: white;">${alarm.time}</div>
-                        <div style="color: #888;">
-                            ${alarm.label} | ${alarm.type} | ${getDaysText(alarm.days)}
-                        </div>
-                    </div>
-                    <button onclick="deleteAlarm(${alarm.id})" class="btn btn-secondary" style="padding: 8px 15px;">Ta bort</button>
-                </div>
-            `).join('');
-        }
-
-        function getDaysText(days) {
-            if (days.length === 7) return 'Alla dagar';
-            const names = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
-            return days.map(d => names[d]).join(', ');
-        }
-
-        function toggleDay(day) {
-            const idx = selectedDays.indexOf(day);
-            if (idx > -1) {
-                if (selectedDays.length > 1) selectedDays.splice(idx, 1);
-            } else {
-                selectedDays.push(day);
-                selectedDays.sort();
-            }
-            updateDayButtons();
-        }
-
-        function updateDayButtons() {
-            const buttons = document.querySelectorAll('.day-btn');
-            buttons.forEach((btn, idx) => {
-                const day = [1,2,3,4,5,6,0][idx]; // Mån=1, Sön=0
-                if (selectedDays.includes(day)) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
-
-        // ===== KLOCKA & BÖNETIDER =====
-        function updateClock() {
-            const now = new Date();
-            const timeStr = now.toTimeString().substring(0,8);
-            document.getElementById('timeDisplay').innerText = timeStr;
-            
-            // Kontrollera alarm varje sekund
-            checkAlarms(now);
-        }
-
-        async function loadPrayerTimes() {
-            try {
-                const response = await fetch('https://api.aladhan.com/v1/timings?latitude=59.3293&longitude=18.0686&method=3');
-                const data = await response.json();
-                const t = data.data.timings;
-                
-                prayers = {
-                    fajr: t.Fajr.substring(0,5),
-                    sunrise: t.Sunrise.substring(0,5),
-                    dhuhr: t.Dhuhr.substring(0,5),
-                    asr: t.Asr.substring(0,5),
-                    maghrib: t.Maghrib.substring(0,5),
-                    isha: t.Isha.substring(0,5)
-                };
-                
-                renderPrayers();
-                updateNextPrayer();
-                
-                // Sätt dagens datum
-                const date = new Date();
-                document.getElementById('dateDisplay').innerText = date.toLocaleDateString('sv-SE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                document.getElementById('islamicDate').innerText = data.data.date.hijri.day + ' ' + data.data.date.hijri.month.en + ' ' + data.data.date.hijri.year + ' AH';
-                
-            } catch (e) {
-                console.error('API error:', e);
-            }
-        }
-
-        function renderPrayers() {
-            const names = { fajr: 'Fajr', sunrise: 'Soluppgång', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' };
-            const icons = { fajr: '🌅', sunrise: '🌄', dhuhr: '☀️', asr: '🌤️', maghrib: '🌇', isha: '🌌' };
-            
-            const grid = document.getElementById('prayerGrid');
-            const now = new Date();
-            const currentHour = now.getHours() + now.getMinutes()/60;
-            
-            grid.innerHTML = Object.entries(prayers).map(([key, time]) => {
-                const [h,m] = time.split(':').map(Number);
-                const prayerHour = h + m/60;
-                const isNext = prayerHour > currentHour;
-                
-                return `
-                    <div class="prayer-card ${isNext ? 'active' : ''}">
-                        <div style="font-size: 2rem; margin-bottom: 5px;">${icons[key]}</div>
-                        <div style="color: #888; font-size: 0.8rem; text-transform: uppercase;">${names[key]}</div>
-                        <div style="font-family: Orbitron; font-size: 1.3rem; margin-top: 5px;">${time}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateNextPrayer() {
-            const now = new Date();
-            const currentMin = now.getHours() * 60 + now.getMinutes();
-            
-            const times = Object.entries(prayers)
-                .filter(([k,v]) => k !== 'sunrise')
-                .map(([name, time]) => {
-                    const [h,m] = time.split(':').map(Number);
-                    return { name, time, minutes: h*60+m };
-                });
-            
-            let next = times.find(t => t.minutes > currentMin) || times[0];
-            document.getElementById('nextPrayerTime').innerText = next.time;
-            document.getElementById('nextPrayerName').innerText = next.name.charAt(0).toUpperCase() + next.name.slice(1);
-        }
-
-        // ===== ALARM-KOLLNING =====
-        function checkAlarms(now) {
-            const timeStr = now.toTimeString().substring(0,5);
-            const day = now.getDay();
-            
-            alarms.forEach(alarm => {
-                if (alarm.time === timeStr && now.getSeconds() === 0 && alarm.days.includes(day)) {
-                    triggerAlarm(alarm);
-                }
-            });
-        }
-
-        function triggerAlarm(alarm) {
-            document.getElementById('modalTime').innerText = alarm.time;
-            document.getElementById('modalLabel').innerText = alarm.label;
-            document.getElementById('alarmModal').classList.add('active');
-            
-            playAdhan(alarm.type);
-            
-            if (navigator.vibrate) {
-                navigator.vibrate([1000, 500, 1000, 500, 1000]);
-            }
-            
-            if (Notification.permission === 'granted') {
-                new Notification('🕌 Böneutrop', { body: `${alarm.label} - ${alarm.time}` });
-            }
-        }
-
-        function showNotification(title, text) {
-            const notif = document.getElementById('notification');
-            document.getElementById('notifTitle').innerText = title;
-            document.getElementById('notifText').innerText = text;
-            notif.classList.add('show');
-            setTimeout(() => notif.classList.remove('show'), 3000);
-        }
-
-        // ===== WAKE LOCK (håll skärmen på) =====
-        async function requestWakeLock() {
-            try {
-                if ('wakeLock' in navigator) {
-                    await navigator.wakeLock.request('screen');
-                }
-            } catch(e) {
-                console.log('Wake lock not supported');
-            }
-        }
-
-        // Init
-        document.getElementById('volumeSlider').addEventListener('input', (e) => {
-            alarmVolume = e.target.value / 100;
-            document.getElementById('volumeValue').innerText = e.target.value + '%';
-        });
-
-        // Skapa stjärnor
-        for(let i=0; i<50; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 3 + 's';
-            document.getElementById('stars').appendChild(star);
-        }
-
-        // Starta
-        updateDayButtons();
         renderAlarms();
-        loadPrayerTimes();
-        setInterval(updateClock, 1000);
-        
-        if ('Notification' in window) Notification.requestPermission();
-    </script>
+        showNotification('Sparat!', `${label} kl ${time} med ${type} Adhan`);
+    }
+
+    function deleteAlarm(id) {
+        alarms = alarms.filter(a => a.id !== id);
+        localStorage.setItem('myPrayerAlarms', JSON.stringify(alarms));
+        renderAlarms();
+    }
+
+    function renderAlarms() {
+        const container = document.getElementById('alarmList');
+        if (alarms.length === 0) {
+            container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Inga alarm inställda än</div>';
+            return;
+        }
+
+        container.innerHTML = alarms.map(alarm => `
+            <div class="alarm-item">
+                <div>
+                    <div style="font-family: Orbitron; font-size: 1.3rem; color: white;">${alarm.time}</div>
+                    <div style="color: #888;">
+                        ${alarm.label} | ${alarm.type} | ${getDaysText(alarm.days)}
+                    </div>
+                </div>
+                <button onclick="deleteAlarm(${alarm.id})" class="btn btn-secondary" style="padding: 8px 15px;">Ta bort</button>
+            </div>
+        `).join('');
+    }
+
+    function getDaysText(days) {
+        if (days.length === 7) return 'Alla dagar';
+        const names = ['Sön','Mån','Tis','Ons','Tor','Fre','Lör'];
+        return days.map(d => names[d]).join(', ');
+    }
+
+    function toggleDay(day) {
+        const idx = selectedDays.indexOf(day);
+        if (idx > -1) {
+            if (selectedDays.length > 1) selectedDays.splice(idx, 1);
+        } else {
+            selectedDays.push(day);
+            selectedDays.sort();
+        }
+        updateDayButtons();
+    }
+
+    function updateDayButtons() {
+        const buttons = document.querySelectorAll('.day-btn');
+        buttons.forEach((btn, idx) => {
+            const day = [1,2,3,4,5,6,0][idx]; // Mån=1, Sön=0
+            btn.classList.toggle('active', selectedDays.includes(day));
+        });
+    }
+
+    // ===== CLOCK & PRAYER TIMES =====
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('timeDisplay').innerText = now.toTimeString().substring(0,8);
+        checkAlarms(now);
+    }
+
+    async function loadPrayerTimes() {
+        try {
+            const response = await fetch('https://api.aladhan.com/v1/timings?latitude=59.3293&longitude=18.0686&method=3');
+            const data = await response.json();
+            const t = data.data.timings;
+
+            prayers = {
+                fajr: t.Fajr.substring(0,5),
+                sunrise: t.Sunrise.substring(0,5),
+                dhuhr: t.Dhuhr.substring(0,5),
+                asr: t.Asr.substring(0,5),
+                maghrib: t.Maghrib.substring(0,5),
+                isha: t.Isha.substring(0,5)
+            };
+
+            renderPrayers();
+            updateNextPrayer();
+
+            const date = new Date();
+            document.getElementById('dateDisplay').innerText = date.toLocaleDateString('sv-SE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('islamicDate').innerText = data.data.date.hijri.day + ' ' + data.data.date.hijri.month.en + ' ' + data.data.date.hijri.year + ' AH';
+        } catch(e) { console.error('API error:', e); }
+    }
+
+    function renderPrayers() {
+        const names = { fajr:'Fajr', sunrise:'Soluppgång', dhuhr:'Dhuhr', asr:'Asr', maghrib:'Maghrib', isha:'Isha' };
+        const icons = { fajr:'🌅', sunrise:'🌄', dhuhr:'☀️', asr:'🌤️', maghrib:'🌇', isha:'🌌' };
+        const grid = document.getElementById('prayerGrid');
+        const now = new Date();
+        const currentHour = now.getHours() + now.getMinutes()/60;
+
+        grid.innerHTML = Object.entries(prayers).map(([key,time]) => {
+            const [h,m] = time.split(':').map(Number);
+            const prayerHour = h + m/60;
+            const isNext = prayerHour > currentHour;
+            return `
+                <div class="prayer-card ${isNext?'active':''}">
+                    <div style="font-size: 2rem; margin-bottom: 5px;">${icons[key]}</div>
+                    <div style="color: #888; font-size: 0.8rem; text-transform: uppercase;">${names[key]}</div>
+                    <div style="font-family: Orbitron; font-size: 1.3rem; margin-top: 5px;">${time}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function updateNextPrayer() {
+        const now = new Date();
+        const currentMin = now.getHours()*60 + now.getMinutes();
+        const times = Object.entries(prayers)
+            .filter(([k]) => k !== 'sunrise')
+            .map(([name,time]) => {
+                const [h,m] = time.split(':').map(Number);
+                return { name, time, minutes:h*60+m };
+            });
+
+        let next = times.find(t => t.minutes > currentMin) || times[0];
+        document.getElementById('nextPrayerTime').innerText = next.time;
+        document.getElementById('nextPrayerName').innerText = next.name.charAt(0).toUpperCase() + next.name.slice(1);
+    }
+
+    // ===== ALARM CHECK =====
+    function checkAlarms(now) {
+        const timeStr = now.toTimeString().substring(0,5);
+        const day = now.getDay();
+
+        alarms.forEach(alarm => {
+            if (alarm.time === timeStr && now.getSeconds() === 0 && alarm.days.includes(day)) {
+                triggerAlarm(alarm);
+            }
+        });
+    }
+
+    function triggerAlarm(alarm) {
+        document.getElementById('modalTime').innerText = alarm.time;
+        document.getElementById('modalLabel').innerText = alarm.label;
+        document.getElementById('alarmModal').classList.add('active');
+
+        playAdhan(alarm.type);
+
+        if (navigator.vibrate) navigator.vibrate([1000,500,1000,500,1000]);
+        if (Notification.permission === 'granted') {
+            new Notification('🕌 Böneutrop', { body: `${alarm.label} - ${alarm.time}` });
+        }
+    }
+
+    function showNotification(title,text) {
+        const notif = document.getElementById('notification');
+        document.getElementById('notifTitle').innerText = title;
+        document.getElementById('notifText').innerText = text;
+        notif.classList.add('show');
+        setTimeout(()=>notif.classList.remove('show'),3000);
+    }
+
+    async function requestWakeLock() {
+        try { if('wakeLock' in navigator) await navigator.wakeLock.request('screen'); }
+        catch(e){ console.log('Wake lock not supported'); }
+    }
+
+    // ===== INIT =====
+    document.getElementById('volumeSlider').addEventListener('input', e=>{
+        alarmVolume = e.target.value/100;
+        document.getElementById('volumeValue').innerText = e.target.value+'%';
+        // Uppdatera preloaded ljud
+        Object.values(adhanAudios).forEach(audio=>audio.volume = alarmVolume);
+    });
+
+    // Stjärnor
+    for(let i=0;i<50;i++){
+        const star = document.createElement('div');
+        star.className='star';
+        star.style.left=Math.random()*100+'%';
+        star.style.top=Math.random()*100+'%';
+        star.style.animationDelay=Math.random()*3+'s';
+        document.getElementById('stars').appendChild(star);
+    }
+
+    updateDayButtons();
+    renderAlarms();
+    loadPrayerTimes();
+    setInterval(updateClock,1000);
+    if('Notification' in window) Notification.requestPermission();
+</script>
+
 </body>
 </html>
