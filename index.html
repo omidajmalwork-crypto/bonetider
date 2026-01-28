@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0e27">
     <title>MUSLIMSK Bönetider</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -92,6 +93,7 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            padding-bottom: 100px;
         }
 
         .header {
@@ -206,6 +208,9 @@
             transition: all 0.3s;
             font-size: 0.9rem;
             white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .loc-btn.active {
@@ -217,6 +222,15 @@
         .loc-btn:hover:not(.active) {
             color: white;
             background: rgba(255,255,255,0.1);
+        }
+
+        .loc-btn .pulse {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px #00ff88;
         }
 
         h1 {
@@ -712,9 +726,66 @@
             margin-top: 5px;
         }
 
+        /* Nya styles för Wake Lock */
+        .wake-lock-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .wake-lock-btn.active {
+            background: rgba(0, 255, 136, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .wake-lock-btn .pulse {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .info-banner {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #ccc;
+            display: none;
+        }
+
+        .info-banner.show {
+            display: block;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
+                padding-bottom: 80px;
+            }
+
+            .wake-lock-btn {
+                bottom: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 0.75rem;
             }
 
             h1 {
@@ -772,6 +843,16 @@
                 width: 150px;
                 font-size: 0.8rem;
             }
+
+            .loc-btn {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+
+            .loc-btn .pulse {
+                width: 6px;
+                height: 6px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -779,7 +860,7 @@
                 gap: 8px;
             }
 
-            .lang-btn, .loc-btn {
+            .lang-btn {
                 padding: 8px 15px;
                 font-size: 0.8rem;
             }
@@ -832,7 +913,7 @@
                 </div>
                 
                 <div class="location-selector">
-                    <button class="loc-btn active" onclick="resetToStockholm()" id="loc-stockholm">📍 Stockholm</button>
+                    <button class="loc-btn active" onclick="resetToStockholm()" id="loc-stockholm"><span class="pulse"></span> Stockholm</button>
                     <button class="loc-btn" onclick="getCurrentLocation()" id="loc-my">Min Plats</button>
                 </div>
                 
@@ -840,6 +921,11 @@
                     <input type="text" class="city-input" id="cityInput" placeholder="Sök stad..." onkeypress="handleCityKeypress(event)">
                     <button class="search-btn" onclick="searchCity()">🔍</button>
                 </div>
+            </div>
+
+            <div class="info-banner" id="wakeLockInfo">
+                ⚠️ <strong>Viktigt:</strong> För att larm ska fungera måste webbläsaren vara aktiv. 
+                Klicka på knappen nere till höger för att hålla skärmen påslagen.
             </div>
 
             <h1 id="page-title">MUSLIMSK KALENDER</h1>
@@ -914,6 +1000,11 @@
         </div>
     </div>
 
+    <button class="wake-lock-btn" id="wakeLockBtn" onclick="toggleWakeLock()">
+        <span class="pulse" style="display: none;" id="wakePulse"></span>
+        <span id="wakeText">Håll skärmen på</span>
+    </button>
+
     <div class="alarm-modal" id="alarmModal">
         <div class="alarm-modal-content">
             <div class="alarm-modal-icon">🕌</div>
@@ -932,9 +1023,39 @@
     </div>
 
     <script>
+        // NoSleep fallback för iOS/äldre enheter
+        const NoSleep = function() {
+            this.enabled = false;
+            var video = document.createElement('video');
+            video.setAttribute('playsinline', '');
+            video.setAttribute('muted', '');
+            video.setAttribute('loop', '');
+            video.src = "data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAACKBtZGF0AAACwQYF//973tP//e0eOQ8YORI6Vz2XWbyHPCz8/x2cGf//7+5kZ////////5wf//////8yZD//////9/dnP//+5g//////+5nv//+Iycgn//5sPf//6szr//9lNf//7ePL//8rKv//4wz7//9pPf//6cfz//8t3v//96TH//8yzv//9+Mb//8vtv//+UEP//86Bv//+EQf//9JxP//xkr//9GI///8eKv//+pc///w47///sbf//6h8///4iLf//+nT///w+P///HQf//9q1P//xPC///7HX//+BK///4c5///1Ib///8fR///+ED///0Z0///9Bn///7CP///uLT///+YO///7yn///4dB///8Yx///7tC///8cH///+BK///4HC///8/P///7cv///tR/////9n///////+Xv///+Af///////5af///8Tv///6CX///2Fj///5R6///9VYf///Qpn///vD3///7DD///yyP///0qf///Wxv///sNr///wVH///2Bb///qA3///9E/////8pf///8vj///+UYf///LJ///8qKf///Kuf/+";
+            video.style.position = 'absolute';
+            video.style.opacity = '0';
+            video.style.pointerEvents = 'none';
+            video.style.width = '1px';
+            video.style.height = '1px';
+            document.body.appendChild(video);
+            
+            this.enable = function() {
+                if (this.enabled) return;
+                video.play();
+                this.enabled = true;
+            };
+            
+            this.disable = function() {
+                video.pause();
+                this.enabled = false;
+            };
+        };
+        const noSleep = new NoSleep();
+
         // Audio context for mobile
         let audioContext = null;
         let currentAudio = null;
+        let wakeLock = null;
+        let isWakeLockActive = false;
 
         const translations = {
             sv: {
@@ -978,7 +1099,9 @@
                 cityNotFound: "Staden hittades inte",
                 stockholm: "Stockholm",
                 yourLocation: "Din Plats",
-                sweden: "Sverige"
+                sweden: "Sverige",
+                keepScreenOn: "Håll skärmen på",
+                screenOn: "Skärm påslagen"
             },
             en: {
                 title: "ISLAMIC CALENDAR",
@@ -1021,7 +1144,9 @@
                 cityNotFound: "City not found",
                 stockholm: "Stockholm",
                 yourLocation: "Your Location",
-                sweden: "Sweden"
+                sweden: "Sweden",
+                keepScreenOn: "Keep screen on",
+                screenOn: "Screen on"
             }
         };
 
@@ -1058,6 +1183,13 @@
                 Notification.requestPermission();
             }
 
+            // Visa info-banner på mobil
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                setTimeout(() => {
+                    document.getElementById('wakeLockInfo').classList.add('show');
+                }, 2000);
+            }
+
             // Unlock audio context on mobile
             document.body.addEventListener('click', unlockAudio, { once: true });
             document.body.addEventListener('touchstart', unlockAudio, { once: true });
@@ -1069,6 +1201,57 @@
             }
             if (audioContext.state === 'suspended') {
                 audioContext.resume();
+            }
+            // Försök aktivera wake lock automatiskt vid första interaktion
+            if (!isWakeLockActive && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                toggleWakeLock();
+            }
+        }
+
+        // Wake Lock API
+        async function toggleWakeLock() {
+            const btn = document.getElementById('wakeLockBtn');
+            const pulse = document.getElementById('wakePulse');
+            const text = document.getElementById('wakeText');
+            const info = document.getElementById('wakeLockInfo');
+            const t = translations[currentLang];
+
+            if (!isWakeLockActive) {
+                try {
+                    if ('wakeLock' in navigator) {
+                        wakeLock = await navigator.wakeLock.request('screen');
+                        isWakeLockActive = true;
+                        btn.classList.add('active');
+                        pulse.style.display = 'block';
+                        text.innerText = t.screenOn;
+                        info.classList.remove('show');
+                        
+                        wakeLock.addEventListener('release', () => {
+                            isWakeLockActive = false;
+                            btn.classList.remove('active');
+                            pulse.style.display = 'none';
+                            text.innerText = t.keepScreenOn;
+                        });
+                    } else {
+                        // Fallback för iOS/äldre enheter
+                        noSleep.enable();
+                        isWakeLockActive = true;
+                        btn.classList.add('active');
+                        pulse.style.display = 'block';
+                        text.innerText = t.screenOn;
+                        info.classList.remove('show');
+                    }
+                } catch (err) {
+                    console.error('Wake Lock failed:', err);
+                    showNotification('Error', currentLang === 'sv' ? 'Kunde inte hålla skärmen på' : 'Could not keep screen on');
+                }
+            } else {
+                if (wakeLock) await wakeLock.release();
+                noSleep.disable();
+                isWakeLockActive = false;
+                btn.classList.remove('active');
+                pulse.style.display = 'none';
+                text.innerText = t.keepScreenOn;
             }
         }
 
@@ -1110,9 +1293,8 @@
                     
                     isUserLocation = false;
                     
-                    // Update UI
                     const stockholmBtn = document.getElementById('loc-stockholm');
-                    stockholmBtn.innerHTML = `📍 ${cityName}`;
+                    stockholmBtn.innerHTML = `<span class="pulse"></span> ${cityName}`;
                     stockholmBtn.classList.add('active');
                     document.getElementById('loc-my').classList.remove('active');
                     
@@ -1138,7 +1320,7 @@
             
             const t = translations[currentLang];
             const stockholmBtn = document.getElementById('loc-stockholm');
-            stockholmBtn.innerHTML = `📍 ${t.stockholm}`;
+            stockholmBtn.innerHTML = `<span class="pulse"></span> ${t.stockholm}`;
             stockholmBtn.classList.add('active');
             document.getElementById('loc-my').classList.remove('active');
             
@@ -1273,9 +1455,16 @@
             document.getElementById('loc-my').innerText = translations[lang].myLocation;
             
             if (!isUserLocation && (currentLocation.city === 'Stockholm' || currentLocation.city === undefined)) {
-                document.getElementById('loc-stockholm').innerHTML = `📍 ${translations[lang].stockholm}`;
+                document.getElementById('loc-stockholm').innerHTML = `<span class="pulse"></span> ${translations[lang].stockholm}`;
             } else if (!isUserLocation) {
-                document.getElementById('loc-stockholm').innerHTML = `📍 ${currentLocation.city}`;
+                document.getElementById('loc-stockholm').innerHTML = `<span class="pulse"></span> ${currentLocation.city}`;
+            }
+            
+            // Uppdatera wake lock text
+            if (isWakeLockActive) {
+                document.getElementById('wakeText').innerText = translations[lang].screenOn;
+            } else {
+                document.getElementById('wakeText').innerText = translations[lang].keepScreenOn;
             }
             
             document.getElementById('cityInput').placeholder = translations[lang].cityPlaceholder;
@@ -1305,9 +1494,8 @@
                 document.getElementById(`day-${i}`).innerText = t.days[i];
             });
 
-            // Update country display
             if (isUserLocation) {
-                document.getElementById('coordsDisplay').innerText = currentLang === 'sv' ? t.yourLocation : t.yourLocation;
+                document.getElementById('coordsDisplay').innerText = t.yourLocation;
             } else {
                 document.getElementById('coordsDisplay').innerText = currentLang === 'sv' ? (currentLocation.country || t.sweden) : (currentLocation.countryEn || t.sweden);
             }
@@ -1499,13 +1687,11 @@
                 return;
             }
             
-            // Update UI - clear city button and set my location active
             document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
-            // Reset Stockholm button to default text
             const stockholmBtn = document.getElementById('loc-stockholm');
-            stockholmBtn.innerHTML = `📍 ${t.stockholm}`;
+            stockholmBtn.innerHTML = `<span class="pulse"></span> ${t.stockholm}`;
             stockholmBtn.classList.remove('active');
             
             const originalText = btn.innerText;
@@ -1545,7 +1731,6 @@
             const name = currentLang === 'sv' ? currentLocation.name : currentLocation.nameEn;
             document.getElementById('locationName').innerText = name;
             
-            // Show country instead of coordinates
             if (isUserLocation) {
                 document.getElementById('coordsDisplay').innerText = t.yourLocation;
             } else {
@@ -1584,6 +1769,11 @@
             timeInput.value = '';
             labelInput.value = '';
             showNotification(t.alarmSet, `${t.alarmSetFor} ${alarm.time} ${formatDays(alarm.days)}`);
+            
+            // Aktivera wake lock automatiskt när man sätter larm
+            if (!isWakeLockActive) {
+                toggleWakeLock();
+            }
         }
 
         function formatDays(days) {
@@ -1628,6 +1818,15 @@
             alarms.forEach(alarm => {
                 if (alarm.time === currentTime && now.getSeconds() === 0 && alarm.days.includes(currentDay)) {
                     triggerAlarm(alarm);
+                    
+                    // Visa systemnotis om tillåtet
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        new Notification('🕌 ' + alarm.label, {
+                            body: currentLang === 'sv' ? `Klockan är ${alarm.time} - Dags för bön` : `It's ${alarm.time} - Time to pray`,
+                            icon: 'https://cdn-icons-png.flaticon.com/512/4358/4358995.png',
+                            requireInteraction: true
+                        });
+                    }
                 }
             });
             updateNextPrayer();
@@ -1641,7 +1840,6 @@
             document.getElementById('modalText').innerText = alarm.label;
             document.getElementById('alarmModal').classList.add('active');
             
-            // Try to play audio with mobile compatibility
             playAdhan();
             
             if (navigator.vibrate) navigator.vibrate([1000, 500, 1000]);
@@ -1650,7 +1848,6 @@
         }
 
         function playAdhan() {
-            // Create audio element
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio = null;
@@ -1659,13 +1856,11 @@
             currentAudio = new Audio('https://www.islamcan.com/audio/adhan/azan1.mp3');
             currentAudio.loop = true;
             
-            // Try to play
             const playPromise = currentAudio.play();
             
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
                     console.log("Audio play failed:", error);
-                    // Fallback to oscillator if audio file fails
                     playFallbackBeep();
                 });
             }
@@ -1692,7 +1887,6 @@
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.5);
                 
-                // Repeat beep
                 setTimeout(() => {
                     if (document.getElementById('alarmModal').classList.contains('active')) {
                         playFallbackBeep();
@@ -1708,7 +1902,6 @@
             currentAlarm = null;
             document.getElementById('alarmModal').classList.remove('active');
             
-            // Stop audio
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
